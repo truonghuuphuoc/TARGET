@@ -1,5 +1,5 @@
-#ifndef __USART_H
-#define __USART_H
+#ifndef __PHN_USART_H
+#define __PHN_USART_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -14,7 +14,9 @@
 
 
 
-/* Private functions ---------------------------------------------------------*/
+/**
+ * @brief Definition for COM port1, connected to USART1
+ */ 
 #define USART1_CLK				RCC_APB2Periph_USART1
 #define USART1_TX_PIN			GPIO_Pin_9
 #define USART1_GPIO_CLK			RCC_APB2Periph_GPIOA
@@ -31,25 +33,42 @@
 #define USART2_RX_PIN			GPIO_Pin_3
 #define USART2_GPIO_PORT		GPIOA
  
-void USART1_Init(void);
-void USART2_Init(void);
-
-void Usart1_SendData_8bit(uint8_t data);
-void Usart2_SendData_8bit(uint8_t data);
+/**
+  * @brief  USART 1.
+  * @param  None
+  * @retval None
+  */ 
+void phnUsart1_Init(void);
 
 
 /**
-  * @brief  Retargets the C library printf function to the USART.
+  * @brief  USART 2.
   * @param  None
   * @retval None
-  */
+  */ 
+void phnUsart2_Init(void);
 
+
+/**
+  * @brief  USART 1 send 1 byte.
+  * @param  data: data sent
+  * @retval None
+  */
+void phnUsart1_SendData(uint8_t data);
+
+
+/**
+  * @brief  USART 2 send 1 byte.
+  * @param  data: data sent
+  * @retval None
+  */
+void phnUsart2_SendData(uint8_t data);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__USART_H */
+#endif /*__PHN_USART_H */
 
 /**
   * @}

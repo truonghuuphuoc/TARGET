@@ -26,7 +26,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "main.h"
-#include "usart.h"
+#include "phnUsart.h"
 
 void NMI_Handler(void);
 void HardFault_Handler(void);

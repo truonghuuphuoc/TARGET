@@ -23,7 +23,8 @@
 #include "main.h"
 
 #include "stm32f10x.h"
-#include "usart.h"
+#include "phnUsart.h"
+#include "phnOsal.h"
 
 
 #ifdef __GNUC__
@@ -47,10 +48,12 @@ int main(void){
 	__disable_irq();
 
 	SystemInit();
-
-	NVIC_InitGroup();
-	USART1_Init();
-
+	
+	phnOsal_Init();
+	
+	phnNVIC_InitGroup();
+	phnUsart1_Init();
+	phnUsart2_Init();
 
 	__enable_irq();
 
@@ -58,13 +61,16 @@ int main(void){
 
 	while (1)
 	{
+		phnOsal_DelayMs(1000);
+		phnUsart1_SendData('1');
 	}
 }
 
 
 
 
-void NVIC_InitGroup(){
+void phnNVIC_InitGroup()
+{
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	// Configure the NVIC Preemption Priority Bits   
@@ -84,15 +90,17 @@ void NVIC_InitGroup(){
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	/*
+	
 	// Enable the USART1 Interrupt
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
-	*/ 
+	
 }
+
+
 PUTCHAR_PROTOTYPE
 {
 	/* Place your implementation of fputc here */

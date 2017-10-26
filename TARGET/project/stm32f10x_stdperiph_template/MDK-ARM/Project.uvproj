@@ -2608,11 +2608,11 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\STM3210C-EVAL\</OutputDirectory>
+          <OutputDirectory>..\HEX\</OutputDirectory>
           <OutputName>STM3210C-EVAL</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\STM3210C-EVAL\</ListingPath>

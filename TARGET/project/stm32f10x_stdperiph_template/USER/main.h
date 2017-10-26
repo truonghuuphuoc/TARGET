@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>	 
 	 
-void NVIC_InitGroup(void);
+void phnNVIC_InitGroup(void);
 
 #ifdef __cplusplus
 }

@@ -23,7 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
-
+#include "phnOsal.h"
 
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -134,6 +134,7 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+	gTickCounter ++;
 }
 
 void TIM2_IRQHandler(void){
@@ -143,20 +144,26 @@ void TIM2_IRQHandler(void){
 	}
 }
 
-void USART1_IRQHandler(void){
-	//u8 data_rec;
+void USART1_IRQHandler(void)
+{
+	uint8_t recv;
 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
-		//data_rec = USART_ReceiveData(USART1);
-		(void) USART1->DR;		
+		//(void) USART1->DR;
+		recv = USART_ReceiveData(USART1);
+		phnUsart1_SendData(recv);			
 	} 
 }
 
 
-void USART2_IRQHandler(void){
+void USART2_IRQHandler(void)
+{
+	uint8_t recv;
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{
-		(void) USART2->DR;			
+		//(void) USART2->DR;
+		recv = USART_ReceiveData(USART2);
+		phnUsart2_SendData(recv);
 	} 
 }
 /******************************************************************************/
