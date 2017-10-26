@@ -24,6 +24,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "phnOsal.h"
+#include "phnExInt.h"
 
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -165,6 +166,76 @@ void USART2_IRQHandler(void)
 		recv = USART_ReceiveData(USART2);
 		phnUsart2_SendData(recv);
 	} 
+}
+
+void EXTI4_IRQHandler(void)
+{
+	if (EXTI_GetITStatus(EXTI_Line4) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line4);
+	}
+}
+
+void EXTI9_5_IRQHandler(void)
+{
+	if (EXTI_GetITStatus(EXTI_Line5) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line5);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line6) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line6);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line7) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line7);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line8) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line8);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line9) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line9);
+	}
+}
+
+void EXTI15_10_IRQHandler(void)
+{
+			
+	if (EXTI_GetITStatus(EXTI_Line12) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line12);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line13) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line13);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line14) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line14);
+	}
+	
+	if (EXTI_GetITStatus(EXTI_Line15) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line12);
+	}
 }
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

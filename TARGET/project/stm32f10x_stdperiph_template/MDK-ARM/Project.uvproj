@@ -398,9 +398,19 @@
               <FilePath>..\USER\main.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
+              <FileName>phnUsart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\usart.h</FilePath>
+              <FilePath>..\USER\phnUsart.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnOsal.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnExInt.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -418,9 +428,19 @@
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>phnUsart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\usart.c</FilePath>
+              <FilePath>..\USER\phnUsart.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnOsal.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnExInt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1253,9 +1273,19 @@
               <FilePath>..\USER\main.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
+              <FileName>phnUsart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\usart.h</FilePath>
+              <FilePath>..\USER\phnUsart.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnOsal.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnExInt.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1273,9 +1303,19 @@
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>phnUsart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\usart.c</FilePath>
+              <FilePath>..\USER\phnUsart.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnOsal.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnExInt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2108,9 +2148,19 @@
               <FilePath>..\USER\main.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
+              <FileName>phnUsart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\usart.h</FilePath>
+              <FilePath>..\USER\phnUsart.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnOsal.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnExInt.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -2128,9 +2178,19 @@
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>phnUsart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\usart.c</FilePath>
+              <FilePath>..\USER\phnUsart.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnOsal.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnExInt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2963,9 +3023,19 @@
               <FilePath>..\USER\main.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
+              <FileName>phnUsart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\usart.h</FilePath>
+              <FilePath>..\USER\phnUsart.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnOsal.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnExInt.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -2983,9 +3053,19 @@
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>phnUsart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\usart.c</FilePath>
+              <FilePath>..\USER\phnUsart.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnOsal.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnExInt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3818,9 +3898,19 @@
               <FilePath>..\USER\main.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
+              <FileName>phnUsart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\usart.h</FilePath>
+              <FilePath>..\USER\phnUsart.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnOsal.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnExInt.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -3838,9 +3928,19 @@
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>phnUsart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\usart.c</FilePath>
+              <FilePath>..\USER\phnUsart.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnOsal.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnExInt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4673,9 +4773,19 @@
               <FilePath>..\USER\main.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
+              <FileName>phnUsart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\usart.h</FilePath>
+              <FilePath>..\USER\phnUsart.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnOsal.h</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\phnExInt.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -4693,9 +4803,19 @@
               <FilePath>..\USER\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>phnUsart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\usart.c</FilePath>
+              <FilePath>..\USER\phnUsart.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnOsal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnOsal.c</FilePath>
+            </File>
+            <File>
+              <FileName>phnExInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\phnExInt.c</FilePath>
             </File>
           </Files>
         </Group>

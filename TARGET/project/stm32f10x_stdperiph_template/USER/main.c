@@ -25,6 +25,7 @@
 #include "stm32f10x.h"
 #include "phnUsart.h"
 #include "phnOsal.h"
+#include "phnExInt.h"
 
 
 #ifdef __GNUC__
@@ -50,6 +51,7 @@ int main(void){
 	SystemInit();
 	
 	phnOsal_Init();
+	phnExInt_Init();
 	
 	phnNVIC_InitGroup();
 	phnUsart1_Init();
@@ -58,11 +60,12 @@ int main(void){
 	__enable_irq();
 
 
-
+	printf("%d\r\n", gExIntCounter);
+	
 	while (1)
 	{
 		phnOsal_DelayMs(1000);
-		phnUsart1_SendData('1');
+		printf("%d\r\n", gExIntCounter);
 	}
 }
 
@@ -76,13 +79,6 @@ void phnNVIC_InitGroup()
 	// Configure the NVIC Preemption Priority Bits   
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
 
-	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-
-
 	// Enable the USART1 Interrupt 
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
@@ -91,9 +87,31 @@ void phnNVIC_InitGroup()
 	NVIC_Init(&NVIC_InitStructure);
 
 	
-	// Enable the USART1 Interrupt
+	// Enable the USART2 Interrupt
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+	
+	
+	// Enable the EXTI4_IRQn Interrupt
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+	
+	// Enable the EXTI4_IRQn Interrupt
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+	
+	// Enable the EXTI9_5_IRQn Interrupt
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
