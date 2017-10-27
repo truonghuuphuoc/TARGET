@@ -25,6 +25,7 @@
 #include "stm32f10x_it.h"
 #include "phnOsal.h"
 #include "phnExInt.h"
+#include "phnCompile.h"
 
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -152,7 +153,15 @@ void USART1_IRQHandler(void)
 	{
 		//(void) USART1->DR;
 		recv = USART_ReceiveData(USART1);
-		phnUsart1_SendData(recv);			
+		
+#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+		if(recv == 'v' || recv == 'V')
+		{
+			printf("%s\r\n", FIRMWARE_VER);	
+		}
+#else
+		phnUsart1_SendData(recv);
+#endif		
 	} 
 }
 

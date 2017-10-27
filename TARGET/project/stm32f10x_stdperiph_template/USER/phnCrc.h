@@ -1,29 +1,26 @@
-#ifndef __PHN_EXINT_H
-#define __PHN_EXINT_H
+#ifndef __PHN_CRC_H
+#define __PHN_CRC_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
-#include <stdint.h>	 	 
-#include "stm32f10x.h"
 
-	 
-extern volatile uint32_t gExIntCounter;
+#include <stdint.h>	 	 
 
 /**
   * @brief  
   * @param  None
-  * @retval None
+  * @retval Crc value
   */
-void phnExInt_Init(void); 	 
+uint8_t phnCrc_Calculate(uint8_t *data, uint16_t length); 	 
 	 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__PHN_EXINT_H */
+#endif /*__PHN_CRC_H */
 
 /**
   * @}

@@ -25,7 +25,8 @@
 #include "stm32f10x.h"
 #include "phnUsart.h"
 #include "phnOsal.h"
-#include "phnExInt.h"
+#include "phnMessage.h"
+#include "phnCompile.h"
 
 
 #ifdef __GNUC__
@@ -46,12 +47,15 @@
   */
 int main(void){
 
+	uint8_t data[] = {0x1E, 0x2D, 0x3C, 0x4B, 0x5A, 0x69, 0x78, 0x87, 0x96, 0xA5, 0xB4, 0xC3, 0xD2, 0xE1};
+	uint8_t dataMesage[272];
+	uint16_t length, index;
+
 	__disable_irq();
 
 	SystemInit();
 	
 	phnOsal_Init();
-	phnExInt_Init();
 	
 	phnNVIC_InitGroup();
 	phnUsart1_Init();
@@ -59,13 +63,17 @@ int main(void){
 
 	__enable_irq();
 
-
-	printf("%d\r\n", gExIntCounter);
 	
 	while (1)
 	{
+		phnMessage_GetMessageFormat(data, sizeof(data), dataMesage, &length);
+		for(index = 0; index <length; index ++)
+		{
+			printf("%02X ", dataMesage[index]);
+		}
+		
+		printf("\r\n");
 		phnOsal_DelayMs(1000);
-		printf("%d\r\n", gExIntCounter);
 	}
 }
 
@@ -121,13 +129,14 @@ void phnNVIC_InitGroup()
 
 PUTCHAR_PROTOTYPE
 {
-	/* Place your implementation of fputc here */
-	/* e.g. write a character to the USART */
-	USART_SendData(USART1, (uint8_t) ch);
-
+	
 	/* Loop until the end of transmission */
 	while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
 	{}
+		
+	/* Place your implementation of fputc here */
+	/* e.g. write a character to the USART */
+	USART_SendData(USART1, (uint8_t) ch);
 
 	return ch;
 }
