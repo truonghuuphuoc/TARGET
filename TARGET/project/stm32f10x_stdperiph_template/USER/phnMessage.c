@@ -9,7 +9,7 @@ void phnMessage_GetMessageFormat(uint8_t *data, uint16_t inLength, uint8_t *mess
 	uint16_t position = 0;
 	
 	//Start message
-	message[position] = STX;
+	message[position] = MESG_STX;
 	position ++;
 	
 	//Data
@@ -27,7 +27,7 @@ void phnMessage_GetMessageFormat(uint8_t *data, uint16_t inLength, uint8_t *mess
 	}
 	
 	//End message
-	message[position] = ETX;
+	message[position] = MESG_ETX;
 	position ++;
 	
 	//Crc

@@ -64,6 +64,14 @@ void phnUsart1_SendData(uint8_t data);
   */
 void phnUsart2_SendData(uint8_t data);
 
+
+/**
+  * @brief  USART 2 send n byte.
+  * @param  data: data sent
+  * @retval None
+  */
+void phnUsart2_SendBuffer(uint8_t *data, uint16_t length);
+
 #ifdef __cplusplus
 }
 #endif

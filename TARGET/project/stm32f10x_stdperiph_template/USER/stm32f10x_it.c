@@ -26,6 +26,7 @@
 #include "phnOsal.h"
 #include "phnExInt.h"
 #include "phnCompile.h"
+#include "phnRs485.h"
 
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -173,7 +174,8 @@ void USART2_IRQHandler(void)
 	{
 		//(void) USART2->DR;
 		recv = USART_ReceiveData(USART2);
-		phnUsart2_SendData(recv);
+		
+		phnRs485_ReceiveHandler(recv);
 	} 
 }
 

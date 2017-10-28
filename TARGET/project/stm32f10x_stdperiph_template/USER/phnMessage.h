@@ -6,12 +6,14 @@
 #endif
 
 #include <stdint.h>
+	 
+#define MESG_BUFFER_SIZE	200	 
 
 /*Start message*/
-#define STX			0x02
+#define MESG_STX			0x02
 
 /*End message*/	 
-#define ETX			0x03	 
+#define MESG_ETX			0x03	 
 
 /**
   * @brief  

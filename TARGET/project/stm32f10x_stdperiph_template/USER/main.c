@@ -24,6 +24,7 @@
 
 #include "stm32f10x.h"
 #include "phnUsart.h"
+#include "phnRs485.h"
 #include "phnOsal.h"
 #include "phnMessage.h"
 #include "phnCompile.h"
@@ -46,10 +47,14 @@
   * @retval None
   */
 int main(void){
-
+#if(PLATFORM_MASTER)
 	uint8_t data[] = {0x1E, 0x2D, 0x3C, 0x4B, 0x5A, 0x69, 0x78, 0x87, 0x96, 0xA5, 0xB4, 0xC3, 0xD2, 0xE1};
 	uint8_t dataMesage[272];
 	uint16_t length, index;
+#else
+	uint8_t dataMesage[272];
+	uint16_t length, index;
+#endif
 
 	__disable_irq();
 
@@ -59,21 +64,47 @@ int main(void){
 	
 	phnNVIC_InitGroup();
 	phnUsart1_Init();
-	phnUsart2_Init();
+
+	phnRs485_Init();
 
 	__enable_irq();
 
 	
 	while (1)
 	{
+		
+#if(PLATFORM_MASTER)
+		phnOsal_DelayMs(5000);
+		
 		phnMessage_GetMessageFormat(data, sizeof(data), dataMesage, &length);
+		
+		phnRs485_SendMessage(dataMesage, length);
+		
 		for(index = 0; index <length; index ++)
 		{
 			printf("%02X ", dataMesage[index]);
 		}
 		
 		printf("\r\n");
-		phnOsal_DelayMs(1000);
+		
+#else
+		if(phnRs485_IsMessageReceived())
+		{
+			phnRs485_GetMessageReceived(dataMesage, &length);
+			
+			printf("\r\n == ");
+			
+			for(index = 0; index <length; index ++)
+			{
+				printf("%02X ", dataMesage[index]);
+			}
+			
+			printf(" == \r\n");
+		}
+		
+		phnOsal_DelayMs(20);
+#endif
+		
 	}
 }
 
