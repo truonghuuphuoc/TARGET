@@ -27,7 +27,7 @@
 #include "phnExInt.h"
 #include "phnCompile.h"
 #include "phnRs485.h"
-
+#include "phnRf443.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -160,6 +160,13 @@ void USART1_IRQHandler(void)
 		{
 			printf("%s\r\n", FIRMWARE_VER);	
 		}
+#elif(PLATFORM_MASTER)
+		phnRf443_ReceiveHandler(recv);
+		
+		if(recv == 'v' || recv == 'V')
+		{
+			printf("%s\r\n", FIRMWARE_VER);	
+		}
 #else
 		phnUsart1_SendData(recv);
 #endif		
@@ -179,12 +186,23 @@ void USART2_IRQHandler(void)
 	} 
 }
 
+void EXTI3_IRQHandler(void)
+{
+	if (EXTI_GetITStatus(EXTI_Line3) != RESET) 
+	{
+		gExIntCounter ++;
+		EXTI_ClearITPendingBit(EXTI_Line3);
+		printf("IRQ 3 %d\r\n", gExIntCounter);
+	}
+}
+
 void EXTI4_IRQHandler(void)
 {
 	if (EXTI_GetITStatus(EXTI_Line4) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line4);
+		printf("IRQ 4 %d\r\n", gExIntCounter);
 	}
 }
 
@@ -194,30 +212,35 @@ void EXTI9_5_IRQHandler(void)
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line5);
+		printf("IRQ 5 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line6) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line6);
+		printf("IRQ 6 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line7) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line7);
+		printf("IRQ 7 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line8) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line8);
+		printf("IRQ 8 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line9) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line9);
+		printf("IRQ 9 %d\r\n", gExIntCounter);
 	}
 }
 
@@ -228,24 +251,28 @@ void EXTI15_10_IRQHandler(void)
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line12);
+		printf("IRQ 12 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line13) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line13);
+		printf("IRQ 13 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line14) != RESET) 
 	{
 		gExIntCounter ++;
 		EXTI_ClearITPendingBit(EXTI_Line14);
+		printf("IRQ 14 %d\r\n", gExIntCounter);
 	}
 	
 	if (EXTI_GetITStatus(EXTI_Line15) != RESET) 
 	{
 		gExIntCounter ++;
-		EXTI_ClearITPendingBit(EXTI_Line12);
+		EXTI_ClearITPendingBit(EXTI_Line15);
+		printf("IRQ 15 %d\r\n", gExIntCounter);
 	}
 }
 /******************************************************************************/

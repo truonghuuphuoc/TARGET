@@ -17,7 +17,7 @@ void phnUsart1_Init(void)
 	- Hardware flow control disabled (RTS and CTS signals)
 	- Receive and transmit enabled
 	*/
-	USART_InitStructure.USART_BaudRate = 115200;
+	USART_InitStructure.USART_BaudRate = 9600;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -107,6 +107,18 @@ void phnUsart2_SendData(uint8_t data)
 {
 	while(USART_GetFlagStatus(USART2,USART_FLAG_TXE) == RESET);
 	USART_SendData(USART2,data);	
+}
+
+
+void phnUsart1_SendBuffer(uint8_t *data, uint16_t length)
+{
+	uint16_t index;
+	
+	for(index = 0; index < length; index ++)
+	{
+		while(USART_GetFlagStatus(USART1,USART_FLAG_TXE) == RESET);
+		USART_SendData(USART1,data[index]);	
+	}
 }
 
 void phnUsart2_SendBuffer(uint8_t *data, uint16_t length)

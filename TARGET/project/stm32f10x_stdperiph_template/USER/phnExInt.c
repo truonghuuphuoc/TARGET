@@ -10,13 +10,36 @@ void phnExInt_Init(void)
 
 	/* Enable the Clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
-
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+	
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
+	
 	/**
-	 *	Pin 4
+	 *	Pin B 3 
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	/* Connect EXTI Line to Button GPIO Pin */
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource3);
+
+	/* Configure Button EXTI line */
+	EXTI_InitStructure.EXTI_Line = EXTI_Line3;
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+    EXTI_Init(&EXTI_InitStructure);
+
+	/**
+	 *	Pin B 4 
+	 */
+	
+	/* Configure pin as input floating */
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -33,11 +56,11 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 5
+	 *	Pin B 5
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -54,11 +77,11 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 6
+	 *	Pin B 6
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -76,11 +99,11 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 7
+	 *	Pin B 7
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -97,11 +120,11 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 8
+	 *	Pin B 8
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -118,11 +141,11 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 9
+	 *	Pin B 9
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -139,58 +162,16 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 9
+	 *	Pin A 13
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-	/* Connect EXTI Line to Button GPIO Pin */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource12);
-
-	/* Configure Button EXTI line */
-	EXTI_InitStructure.EXTI_Line = EXTI_Line12;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    EXTI_Init(&EXTI_InitStructure);
-	
-	
-	/**
-	 *	Pin 12
-	 */
-	
-	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-	/* Connect EXTI Line to Button GPIO Pin */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource12);
-
-	/* Configure Button EXTI line */
-	EXTI_InitStructure.EXTI_Line = EXTI_Line12;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    EXTI_Init(&EXTI_InitStructure);
-	
-	
-	/**
-	 *	Pin 13
-	 */
-	
-	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	/* Connect EXTI Line to Button GPIO Pin */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource13);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource13);
 
 	/* Configure Button EXTI line */
 	EXTI_InitStructure.EXTI_Line = EXTI_Line13;
@@ -202,16 +183,16 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 14
+	 *	Pin A 14
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	/* Connect EXTI Line to Button GPIO Pin */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource13);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource14);
 
 	/* Configure Button EXTI line */
 	EXTI_InitStructure.EXTI_Line = EXTI_Line14;
@@ -223,16 +204,16 @@ void phnExInt_Init(void)
 	
 	
 	/**
-	 *	Pin 15
+	 *	Pin A 15
 	 */
 	
 	/* Configure pin as input floating */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	/* Connect EXTI Line to Button GPIO Pin */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource13);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource15);
 
 	/* Configure Button EXTI line */
 	EXTI_InitStructure.EXTI_Line = EXTI_Line15;

@@ -9,26 +9,26 @@
 #include "phnUsart.h"
 #include "phnMessage.h"
 
-volatile uint32_t 	gStartTime 			= 0;
+volatile uint32_t 	gRs485_StartTime 			= 0;
 
-volatile uint8_t	gIsStartFrame		= 0;
-volatile uint8_t	gIsEndFrame			= 0;
-volatile uint8_t	gIsFisrtNibble		= 0;
+volatile uint8_t	gRs485_IsStartFrame			= 0;
+volatile uint8_t	gRs485_IsEndFrame			= 0;
+volatile uint8_t	gRs485_IsFisrtNibble		= 0;
 
-volatile uint8_t	gCurrentByte		= 0;
-volatile uint8_t	gIsMessageRecv		= 0;
+volatile uint8_t	gRs485_CurrentByte			= 0;
+volatile uint8_t	gRs485_IsMessageRecv		= 0;
 
 
-uint8_t	gMessageData[MESG_BUFFER_SIZE];
-volatile uint16_t 	gDataPosition		= 0;
+uint8_t	gRs485_MessageData[MESG_BUFFER_SIZE];
+volatile uint16_t 	gRs485_DataPosition			= 0;
 
 static void phnRs485_Reset()
 {
-	gIsStartFrame 	= 0;
-	gIsEndFrame 	= 0;
-	gDataPosition	= 0;
-	gIsFisrtNibble	= 0;
-	gIsMessageRecv	= 0;
+	gRs485_IsStartFrame 	= 0;
+	gRs485_IsEndFrame 		= 0;
+	gRs485_DataPosition		= 0;
+	gRs485_IsFisrtNibble	= 0;
+	gRs485_IsMessageRecv	= 0;
 }
 
 void phnRs485_Init()
@@ -74,37 +74,35 @@ void phnRs485_ReceiveHandler(uint8_t data)
 	case MESG_STX:   // start of text
 		phnRs485_Reset();
 	
-		gStartTime		= phnOsal_GetCurrentTickCount();
-		gIsStartFrame 	= 1;
-		gIsFisrtNibble	= 1;
+		gRs485_StartTime		= phnOsal_GetCurrentTickCount();
+		gRs485_IsStartFrame 	= 1;
+		gRs485_IsFisrtNibble	= 1;
 		break;
 
 	case MESG_ETX:   // end of text
-		dwTime = phnOsal_GetElapseTime(gStartTime);
+		dwTime = phnOsal_GetElapseTime(gRs485_StartTime);
 		
 		// timeout
 		if(dwTime > RS485_RECV_TIMEOUT)
 		{
-			printf("\r\nTime out 1\r\n");
 			phnRs485_Reset();
 			break;
 		}
 		// reset start time
-		gStartTime		= phnOsal_GetCurrentTickCount();
+		gRs485_StartTime		= phnOsal_GetCurrentTickCount();
 		
 		// have end frame
-		gIsEndFrame 	= 1;
+		gRs485_IsEndFrame 		= 1;
 		break;
 
 	default:
 		// wait until packet officially starts
-		if (!gIsStartFrame)
+		if (!gRs485_IsStartFrame)
 		{
-			printf("\r\nNot start\r\n");
 			break;
 		}
 		
-		dwTime = phnOsal_GetElapseTime(gStartTime);
+		dwTime = phnOsal_GetElapseTime(gRs485_StartTime);
 		
 		// timeout
 		if(dwTime > RS485_RECV_TIMEOUT)
@@ -113,7 +111,7 @@ void phnRs485_ReceiveHandler(uint8_t data)
 			break;
 		}
 		// reset start time
-		gStartTime = phnOsal_GetCurrentTickCount();
+		gRs485_StartTime = phnOsal_GetCurrentTickCount();
 
 		// check byte is in valid form (4 bits followed by 4 bits complemented)
 		if ((data >> 4) != ((data & 0x0F) ^ 0x0F) )
@@ -126,37 +124,37 @@ void phnRs485_ReceiveHandler(uint8_t data)
 		data >>= 4;
 
 		// high-order nibble?
-		if(gIsFisrtNibble)
+		if(gRs485_IsFisrtNibble)
 		{
-			gCurrentByte = data;
-			gIsFisrtNibble = 0;
+			gRs485_CurrentByte = data;
+			gRs485_IsFisrtNibble = 0;
 			break;
 		}
 
 		// low-order nibble
-		gCurrentByte	<<= 4;
-		gCurrentByte 	|= data;
-		gIsFisrtNibble 	= 1;
+		gRs485_CurrentByte	<<= 4;
+		gRs485_CurrentByte 	|= data;
+		gRs485_IsFisrtNibble 	= 1;
 
 		// if we have the ETX this must be the CRC
-		if (gIsEndFrame)
+		if (gRs485_IsEndFrame)
 		{
-			uint8_t crc = phnCrc_Calculate(gMessageData,gDataPosition); 
-			if (crc != gCurrentByte)
+			uint8_t crc = phnCrc_Calculate(gRs485_MessageData,gRs485_DataPosition); 
+			if (crc != gRs485_CurrentByte)
 			{
 				phnRs485_Reset();
 			}
 			else
 			{
 				//have message
-				gIsMessageRecv = 1;
+				gRs485_IsMessageRecv = 1;
 			}
 			
 			break;
 		}  // end if have ETX already
 
 		// keep adding if not full
-		gMessageData[gDataPosition ++] = gCurrentByte;
+		gRs485_MessageData[gRs485_DataPosition ++] = gRs485_CurrentByte;
 		break;
 	}
 }
@@ -164,16 +162,16 @@ void phnRs485_ReceiveHandler(uint8_t data)
 
 uint8_t phnRs485_IsMessageReceived()
 {
-	return gIsMessageRecv;
+	return gRs485_IsMessageRecv;
 }
 
 void phnRs485_GetMessageReceived(uint8_t *message, uint16_t *length)
 {
-	memcpy(message, gMessageData, gDataPosition);
-	*length = gDataPosition;
+	memcpy(message, gRs485_MessageData, gRs485_DataPosition);
+	*length = gRs485_DataPosition;
 	
-	gDataPosition 	= 0;
-	gIsMessageRecv	= 0;
+	gRs485_DataPosition 	= 0;
+	gRs485_IsMessageRecv	= 0;
 }
 
 

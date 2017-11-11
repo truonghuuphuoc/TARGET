@@ -25,9 +25,11 @@
 #include "stm32f10x.h"
 #include "phnUsart.h"
 #include "phnRs485.h"
+#include "phnRf443.h"
 #include "phnOsal.h"
 #include "phnMessage.h"
 #include "phnCompile.h"
+#include "phnExInt.h"
 
 
 #ifdef __GNUC__
@@ -47,15 +49,9 @@
   * @retval None
   */
 int main(void){
-#if(PLATFORM_MASTER)
-	uint8_t data[] = {0x1E, 0x2D, 0x3C, 0x4B, 0x5A, 0x69, 0x78, 0x87, 0x96, 0xA5, 0xB4, 0xC3, 0xD2, 0xE1};
-	uint8_t dataMesage[272];
-	uint16_t length, index;
-#else
-	uint8_t dataMesage[272];
-	uint16_t length, index;
-#endif
 
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
 	__disable_irq();
 
 	SystemInit();
@@ -64,47 +60,32 @@ int main(void){
 	
 	phnNVIC_InitGroup();
 	phnUsart1_Init();
+	phnExInt_Init();
+		
+	
+	/* GPIOD Periph clock enable */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 
-	phnRs485_Init();
+	/* Configure PD0 and PD2 in output pushpull mode */
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 	__enable_irq();
 
+	printf("start\r\n");
 	
 	while (1)
 	{
 		
-#if(PLATFORM_MASTER)
-		phnOsal_DelayMs(5000);
+		phnOsal_DelayMs(1000);
 		
-		phnMessage_GetMessageFormat(data, sizeof(data), dataMesage, &length);
 		
-		phnRs485_SendMessage(dataMesage, length);
-		
-		for(index = 0; index <length; index ++)
-		{
-			printf("%02X ", dataMesage[index]);
-		}
-		
-		printf("\r\n");
-		
-#else
-		if(phnRs485_IsMessageReceived())
-		{
-			phnRs485_GetMessageReceived(dataMesage, &length);
-			
-			printf("\r\n == ");
-			
-			for(index = 0; index <length; index ++)
-			{
-				printf("%02X ", dataMesage[index]);
-			}
-			
-			printf(" == \r\n");
-		}
-		
-		phnOsal_DelayMs(20);
-#endif
-		
+		GPIO_SetBits(GPIOA, GPIO_Pin_4);
+		phnOsal_DelayMs(1);
+		GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 	}
 }
 
@@ -133,6 +114,12 @@ void phnNVIC_InitGroup()
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
+	// Enable the EXTI3_IRQn Interrupt
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 	
 	// Enable the EXTI4_IRQn Interrupt
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
