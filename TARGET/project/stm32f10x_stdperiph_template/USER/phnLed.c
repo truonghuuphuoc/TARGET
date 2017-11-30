@@ -52,10 +52,7 @@ void phnLed_Init()
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
-	GPIO_ResetBits(GPIOB, GPIO_Pin_11);
-	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-	GPIO_ResetBits(GPIOB, GPIO_Pin_13);
-	GPIO_ResetBits(GPIOB, GPIO_Pin_14);
+	phnLed_ClearAllLed();
 }
 
 
@@ -94,6 +91,14 @@ void phnLed_SetLedStatus()
 
 void phnLed_ClearLedStatus()
 {
+	GPIO_ResetBits(GPIOB, GPIO_Pin_14);
+}
+
+void phnLed_ClearAllLed()
+{
+	GPIO_ResetBits(GPIOB, GPIO_Pin_11);
+	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+	GPIO_ResetBits(GPIOB, GPIO_Pin_13);
 	GPIO_ResetBits(GPIOB, GPIO_Pin_14);
 }
 

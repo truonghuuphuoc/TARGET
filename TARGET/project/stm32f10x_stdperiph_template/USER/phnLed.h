@@ -42,6 +42,14 @@ void phnLed_SetLedStatus(void);
   */
 void phnLed_ClearLedStatus(void);
 
+
+/**
+  * @brief  Turn off all LED
+  * @param  None
+  * @retval None
+  */
+void phnLed_ClearAllLed(void);
+
 #ifdef __cplusplus
 }
 #endif

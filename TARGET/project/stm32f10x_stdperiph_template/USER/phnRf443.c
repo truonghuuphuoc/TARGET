@@ -33,8 +33,53 @@ static void phnRf443_Reset()
 
 void phnRf443_Init()
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
 	phnRf443_Reset();
 	phnUsart1_Init();
+	
+		
+	/* Enable the Clock */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+	
+	
+	/**
+	 *	Pin B.15 - M0 
+	 */
+	
+	/* Configure pin as output pull-up */
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	
+	/**
+	 *	Pin A.8 - M1 
+	 */
+	
+	/* Configure pin as output pull-up */
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
+	
+	
+	/**
+	 *	Pin A.11 - AUX 
+	 */
+	
+	/* Configure pin as output pull-up */
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	//Set mode 00
+	GPIO_ResetBits(GPIOB, GPIO_Pin_15);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+	
 }
 
 void phnRf443_ReceiveHandler(uint8_t data) 		
