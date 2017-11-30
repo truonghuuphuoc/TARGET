@@ -50,7 +50,10 @@
   */
 int main(void){
 
-	GPIO_InitTypeDef GPIO_InitStructure;
+	uint8_t data[] = {0x1E, 0x2D, 0x3C, 0x4B, 0x5A, 0x69, 0x78, 0x87, 0x96, 0xA5, 0xB4, 0xC3, 0xD2, 0xE1};
+	uint8_t message[256];
+	uint8_t recv[256];
+	uint16_t recvLength, index;
 	
 	__disable_irq();
 
@@ -59,33 +62,30 @@ int main(void){
 	phnOsal_Init();
 	
 	phnNVIC_InitGroup();
-	phnUsart1_Init();
-	phnExInt_Init();
-		
-	
-	/* GPIOD Periph clock enable */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+	phnRf443_Init();
+	phnUsart2_Init();
 
-	/* Configure PD0 and PD2 in output pushpull mode */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 	__enable_irq();
-
-	printf("start\r\n");
 	
 	while (1)
 	{
+		phnOsal_DelayMs(50);
 		
-		phnOsal_DelayMs(1000);
-		
-		
-		GPIO_SetBits(GPIOA, GPIO_Pin_4);
-		phnOsal_DelayMs(1);
-		GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+		if(phnRf443_IsMessageReceived())
+		{
+			phnRf443_GetMessageReceived(recv, &recvLength);
+			
+			//log message
+			for(index = 0; index < recvLength; index ++)
+			{
+				printf("%02X ", recv[index]);
+			}
+			printf("\r\n");
+			
+			phnMessage_GetMessageFormat(data, sizeof(data), message, &recvLength);
+			
+			phnRf443_SendMessage(message, recvLength);
+		}
 	}
 }
 
@@ -154,7 +154,10 @@ PUTCHAR_PROTOTYPE
 		
 	/* Place your implementation of fputc here */
 	/* e.g. write a character to the USART */
-	USART_SendData(USART1, (uint8_t) ch);
+	//USART_SendData(USART1, (uint8_t) ch);
+		
+	//for rf debug, need log switch to uart2
+	USART_SendData(USART2, (uint8_t) ch);		
 
 	return ch;
 }
