@@ -30,6 +30,7 @@
 #include "phnMessage.h"
 #include "phnCompile.h"
 #include "phnExInt.h"
+#include "phnLed.h"
 
 
 #ifdef __GNUC__
@@ -49,43 +50,44 @@
   * @retval None
   */
 int main(void){
-
-	GPIO_InitTypeDef GPIO_InitStructure;
 	
 	__disable_irq();
 
 	SystemInit();
-	
+
 	phnOsal_Init();
 	
 	phnNVIC_InitGroup();
-	phnUsart1_Init();
-	phnExInt_Init();
-		
 	
-	/* GPIOD Periph clock enable */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
-
-	/* Configure PD0 and PD2 in output pushpull mode */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+	phnUsart1_Init();
+		
+	phnLed_Init();
+	
 	__enable_irq();
-
-	printf("start\r\n");
 	
 	while (1)
 	{
-		
+		phnLed_SetDeviceLeds(LED_DEV_MASSTER);
 		phnOsal_DelayMs(1000);
+		phnLed_ClearAllLed();
+		
+		phnLed_SetDeviceLeds(LED_DEV_SLAVE_1);
+		phnOsal_DelayMs(1000);
+		phnLed_ClearAllLed();
 		
 		
-		GPIO_SetBits(GPIOA, GPIO_Pin_4);
-		phnOsal_DelayMs(1);
-		GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+		phnLed_SetDeviceLeds(LED_DEV_SLAVE_2);
+		phnOsal_DelayMs(1000);
+		phnLed_ClearAllLed();
+		
+		phnLed_SetDeviceLeds(LED_DEV_SLAVE_3);
+		phnOsal_DelayMs(1000);
+		phnLed_ClearAllLed();
+		
+		
+		phnLed_SetLedStatus();
+		phnOsal_DelayMs(1000);
+		phnLed_ClearAllLed();
 	}
 }
 
