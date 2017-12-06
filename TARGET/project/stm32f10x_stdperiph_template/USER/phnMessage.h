@@ -7,20 +7,57 @@
 
 #include <stdint.h>
 	 
-#define MESG_BUFFER_SIZE	200	 
+#include "phnCompile.h"	 
+	 
+#define MESG_BUFFER_SIZE	100	 
 
 /*Start message*/
 #define MESG_STX			0x02
 
 /*End message*/	 
-#define MESG_ETX			0x03	 
+#define MESG_ETX			0x03
+
+typedef enum
+{
+	PHN_DEV_ONLINE	= 0xFF,
+	PHN_DEV_OFFLINE	= 0xFE,
+}phnMessageValue_t;
+
+typedef enum
+{
+	PHN_STATUS_UPDATE 	= 0x00,
+	PHN_STATUS_SEND		= 0x01,
+	PHN_STATUS_DONE		= 0x02,
+}phnMessageStatus_t;
+
+typedef struct
+{
+	uint8_t mAck;
+	uint8_t mValue;
+	uint8_t mStatus;
+}phnMessageType_t;
+
+
+#if(PLATFORM_MASTER)
+extern phnMessageType_t gMessageControl[3];
+#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+extern phnMessageType_t gMessageControl;
+#endif
+	 
+/**
+  * @brief  
+  * @param  None
+  * @retval None
+  */
+void phnMessage_GetMessageFormat(uint8_t *data, uint16_t inLength, uint8_t *message, uint16_t *outLength);
+
 
 /**
   * @brief  
   * @param  None
   * @retval None
   */
-void phnMessage_GetMessageFormat(uint8_t *data, uint16_t inLength, uint8_t *message, uint16_t *outLength); 	 
+uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t deviceId);
 	 
 
 #ifdef __cplusplus

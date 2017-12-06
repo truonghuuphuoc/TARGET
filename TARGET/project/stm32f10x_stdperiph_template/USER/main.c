@@ -49,52 +49,414 @@
   * @param  None
   * @retval None
   */
-int main(void){
-	
-	__disable_irq();
+int main(void)
+{
 
-	SystemInit();
+#if(PLATFORM_MASTER)
+	phnMaster_Processing();
+#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+	phnSlave_Processing();
+#endif	
 
-	phnOsal_Init();
-	
-	phnNVIC_InitGroup();
-	
-	phnUsart1_Init();
-		
-	phnLed_Init();
-	
-	__enable_irq();
-	
-	while (1)
-	{
-		phnLed_SetDeviceLeds(LED_DEV_MASSTER);
-		phnOsal_DelayMs(1000);
-		phnLed_ClearAllLed();
-		
-		phnLed_SetDeviceLeds(LED_DEV_SLAVE_1);
-		phnOsal_DelayMs(1000);
-		phnLed_ClearAllLed();
-		
-		
-		phnLed_SetDeviceLeds(LED_DEV_SLAVE_2);
-		phnOsal_DelayMs(1000);
-		phnLed_ClearAllLed();
-		
-		phnLed_SetDeviceLeds(LED_DEV_SLAVE_3);
-		phnOsal_DelayMs(1000);
-		phnLed_ClearAllLed();
-		
-		
-		phnLed_SetLedStatus();
-		phnOsal_DelayMs(1000);
-		phnLed_ClearAllLed();
-	}
 }
 
+#if(PLATFORM_MASTER)
+void phnMaster_Processing()
+{
+	uint8_t deviceAck		= 0x00;
+	uint32_t timeStatus 	= 0x00;
+	
+	uint8_t dataRequest[MESG_BUFFER_SIZE];
+	uint8_t messRequest[MESG_BUFFER_SIZE];
+	
+	uint16_t messLength	= 0x00;
+	
+	uint8_t deviceIndex	= 0x00;
+	
+	uint32_t prevTime	= 0x00;
+	uint32_t deltaTime	= 0x00;
+	
+	uint8_t currState	= 0x00;
+	uint8_t prevState	= 0x00;
+	
+	uint8_t salveDevice[3] = {	PHN_SLAVE_1_DEV_ID, 
+								PHN_SLAVE_2_DEV_ID, 
+								PHN_SLAVE_3_DEV_ID};
+	
+	//Disalbe all interrupt
+	__disable_irq();
+
+	//System initialize
+	SystemInit();
+
+	//Osal initialize
+	phnOsal_Init();
+	
+	//Interrupt priority initialize
+	phnNvic_InitGroup();
+	
+	//Rf443 initialize
+	phnRf443_Init();
+	
+	//Rs485 initialize
+	phnRs485_Init();
+	
+	//Led of status and device intitialize	
+	phnLed_Init();
+	
+	//Enable all interrupt
+	__enable_irq();
+	
+	
+	//Set Master Led
+	phnLed_SetDeviceLeds(LED_DEV_MASSTER);
+	
+	//Initialze state machine
+	currState = PHN_MAST_IDLE_SLEEP;
+	prevState = PHN_MAST_IDLE_SLEEP;
+	
+	//Get current tick count
+	prevTime = phnOsal_GetCurrentTickCount();
+	timeStatus = phnOsal_GetCurrentTickCount();
+	
+	deviceIndex = 0;
+	
+	while(1)
+	{
+		switch(currState)
+		{
+			case PHN_MAST_SEND_REQUEST:
+				
+				//increase index of slave device
+				deviceIndex = (deviceIndex + 1) % 3;
+				
+				//fill data request
+				dataRequest[0] = salveDevice[deviceIndex];
+				dataRequest[1] = DEVICE_ID;
+				dataRequest[2] = gMessageControl[deviceIndex].mAck;
+			
+				//format message
+				phnMessage_GetMessageFormat(dataRequest, 3, messRequest, &messLength);
+			
+				//send message
+				phnRs485_SendMessage(messRequest, messLength);
+			
+				//get current tick 
+				prevTime = phnOsal_GetCurrentTickCount();
+			
+				//switch to wait response mode
+				prevState = currState;
+				currState = PHN_MAST_WAIT_RESPONSE;
+				break;
+
+			
+			case PHN_MAST_WAIT_RESPONSE:
+				
+				//check host request inforamtion
+				if(phnRf443_IsMessageReceived())
+				{
+					//store current state
+					prevState = currState;
+					
+					//switch to response mode
+					currState = PHN_MAST_RESP_HOST;
+					
+					//set last time receive message
+					timeStatus = phnOsal_GetCurrentTickCount();
+					phnLed_SetLedStatus();
+					
+					break;
+				}
+				
+				//recevie message slave respond
+				if(phnRs485_IsMessageReceived())
+				{
+					//handle data response
+					phnRs485_GetMessageReceived(messRequest, &messLength);
+					
+					if( messLength == 4 && 
+						messRequest[0] == DEVICE_ID && 
+						messRequest[1] == salveDevice[deviceIndex])
+					{
+						//set ACK
+						if(gMessageControl[deviceIndex].mAck)
+						{
+							gMessageControl[deviceIndex].mAck = 0x00;
+						}
+						else
+						{
+							gMessageControl[deviceIndex].mAck = 0x01;
+						}
+						
+						if( messRequest[3] == PHN_DEV_OFFLINE ||
+							messRequest[3] == PHN_DEV_ONLINE )
+						{
+							if(gMessageControl[deviceIndex].mStatus == PHN_STATUS_SEND ||
+							   gMessageControl[deviceIndex].mStatus == PHN_STATUS_UPDATE )
+							{
+								if( gMessageControl[deviceIndex].mValue == PHN_DEV_OFFLINE ||
+									gMessageControl[deviceIndex].mValue == PHN_DEV_ONLINE )
+								{
+									//Update value
+									gMessageControl[deviceIndex].mValue 	= messRequest[3];
+									gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;	
+								}
+							}
+							else
+							{
+								//Update value
+								gMessageControl[deviceIndex].mValue 	= messRequest[3];
+								gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;
+							}
+						}
+						else
+						{
+							//Update value
+							gMessageControl[deviceIndex].mValue 	= messRequest[3];
+							gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;
+						}						
+					}
+				}
+				
+				deltaTime = phnOsal_GetElapseTime(prevTime);
+				
+				//500 millisecond 
+				if(deltaTime >= 500)
+				{
+					//store current state
+					prevState = currState;
+					
+					//switch to response mode
+					currState = PHN_MAST_SEND_REQUEST;
+					
+					//Update value & not change ACK
+					gMessageControl[deviceIndex].mValue 	= PHN_DEV_OFFLINE;
+					gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;
+					
+					break;
+				}
+				
+				//led status process
+				phnStatus_Processing(timeStatus);
+				
+				break;
+			
+			case PHN_MAST_RESP_HOST:
+				
+				//check host request inforamtion
+				if(phnRf443_IsMessageReceived())
+				{
+					phnRf443_GetMessageReceived(messRequest, &messLength);
+					
+					if(	messLength == 3 &&
+						messRequest[0] == DEVICE_ID)
+					{
+						messLength = 0;
+						
+						//set destination
+						dataRequest[messLength] = messRequest[1];
+						messLength ++;
+						
+						//set its address
+						dataRequest[messLength] = DEVICE_ID;
+						messLength ++;
+						
+						//set ACK
+						dataRequest[messLength] = messRequest[2];
+						messLength ++;
+						
+						//set value of slave 1
+						dataRequest[messLength] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 0);
+						messLength ++;
+						
+						//set value of slave 2
+						dataRequest[messLength] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 1);
+						messLength ++;
+						
+						//set value of slave 3
+						dataRequest[messLength] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 2);
+						messLength ++;
+						
+						//set host ACK
+						if(messRequest[2] == deviceAck)
+						{
+							if(deviceAck)
+							{
+								deviceAck = 0x00;
+							}
+							else
+							{
+								deviceAck = 0x01;
+							}
+						}
+						
+						//send message reponse to host
+						phnMessage_GetMessageFormat(dataRequest, 6, messRequest, &messLength);
+						phnRf443_SendMessage(messRequest, messLength);
+					}
+					
+					break;
+				}
+				
+				//set state machine
+				currState = prevState;
+				break;
+			
+			case PHN_MAST_IDLE_SLEEP:
+				
+				//check host request inforamtion
+				if(phnRf443_IsMessageReceived())
+				{
+					//store current state
+					prevState = currState;
+					
+					//switch to response mode
+					currState = PHN_MAST_RESP_HOST;
+					
+					break;
+				}
+				
+				deltaTime = phnOsal_GetElapseTime(prevTime);
+				
+				//500 millisecond 
+				if(deltaTime >= 500)
+				{
+					//store current state
+					prevState = currState;
+					
+					//switch to response mode
+					currState = PHN_MAST_SEND_REQUEST;
+					
+					break;
+				}
+				
+				//led status process
+				phnStatus_Processing(timeStatus);
+				
+				break;
+			
+			default:
+				//get current tick count
+				prevTime = phnOsal_GetCurrentTickCount();
+				
+				//switch to sleep mode
+				currState = PHN_MAST_IDLE_SLEEP;
+				break;
+		}
+	}
+}
+#endif
+
+#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+void phnSlave_Processing()
+{
+	uint32_t timeStatus 	= 0x00;
+	
+	uint8_t dataRequest[MESG_BUFFER_SIZE];
+	uint8_t messRequest[MESG_BUFFER_SIZE];
+	
+	uint16_t messLength	= 0x00;
+	
+	//Disalbe all interrupt
+	__disable_irq();
+
+	//System initialize
+	SystemInit();
+
+	//Osal initialize
+	phnOsal_Init();
+	
+	//Interrupt priority initialize
+	phnNvic_InitGroup();
+	
+	//Debug log nitialize
+	phnUsart1_Init();
+	
+	//Rs485 initialize
+	phnRs485_Init();
+	
+	//Gpio interrrupt initialize
+	phnExInt_Init();
+	
+	//Led of status and device intitialize	
+	phnLed_Init();
+	
+	//Enable all interrupt
+	__enable_irq();
+	
+	//Set Slave Led
+#if(PLATFORM_SALVE_1)
+	phnLed_SetDeviceLeds(LED_DEV_SLAVE_1);
+#elif(PLATFORM_SALVE_2)
+	phnLed_SetDeviceLeds(LED_DEV_SLAVE_2);
+#elif(PLATFORM_SALVE_3)
+	phnLed_SetDeviceLeds(LED_DEV_SLAVE_3);
+#endif
+	
+		
+	//Get current tick count
+	timeStatus = phnOsal_GetCurrentTickCount();
+	
+	while(1)
+	{
+		phnStatus_Processing(timeStatus);
+		
+		if(!phnRs485_IsMessageReceived())
+		{
+			//next process
+			continue;
+		}
+		
+		//handle message
+		phnRs485_GetMessageReceived(messRequest, &messLength);
+		if( messLength == 3 && 
+			messRequest[0] == DEVICE_ID)
+		{
+			//set time staus and led
+			timeStatus = phnOsal_GetCurrentTickCount();
+			phnLed_SetLedStatus();
+			
+			//destination
+			dataRequest[0] = messRequest[1];
+			
+			//source
+			dataRequest[1] = DEVICE_ID;
+			
+			//set ACK
+			dataRequest[2] = messRequest[2];
+			
+			//set value
+			dataRequest[3] = phnMessage_GetDeviceValue(messRequest[2], gMessageControl.mAck, 0);
+			
+			//delay 5ms for host ready
+			phnMessage_GetMessageFormat(dataRequest, 4, messRequest, &messLength);
+			phnRs485_SendMessage(messRequest, messLength);
+		}
+	}
+}
+#endif
 
 
+void phnStatus_Processing(uint16_t lastTime)
+{
+	uint32_t dwTime = phnOsal_GetElapseTime(lastTime);
+	
+#if(PLATFORM_MASTER)
+	//5 second
+	if(dwTime > 5000)
+	{
+		phnLed_ClearLedStatus();
+	}
+#else
+	//2 second
+	if(dwTime > 3000)
+	{
+		phnLed_ClearLedStatus();
+	}
+#endif
+}
 
-void phnNVIC_InitGroup()
+void phnNvic_InitGroup()
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -130,14 +492,14 @@ void phnNVIC_InitGroup()
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
-	// Enable the EXTI4_IRQn Interrupt
+	// Enable the EXTI9_5_IRQn Interrupt
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
-	// Enable the EXTI9_5_IRQn Interrupt
+	// Enable the EXTI15_10_IRQn Interrupt
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;

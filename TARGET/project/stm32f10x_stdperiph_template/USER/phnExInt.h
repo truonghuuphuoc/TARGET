@@ -8,9 +8,6 @@
 #include <stdint.h>	 	 
 #include "stm32f10x.h"
 
-	 
-extern volatile uint32_t gExIntCounter;
-
 /**
   * @brief  
   * @param  None

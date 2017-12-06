@@ -40,14 +40,12 @@ void phnOsal_DelayUs(uint32_t dwUs)
 
 void phnOsal_DelayMs(uint32_t dwMs)
 {
-	uint32_t timeStart = gTickCounter + dwMs;
+	uint32_t deltaTime;
+	uint32_t timeStart = phnOsal_GetCurrentTickCount();
 	
-	if(timeStart < gTickCounter)
+	do
 	{
-		phnOsal_DelayUs(10);
+		deltaTime = phnOsal_GetElapseTime(timeStart);
 	}
-	else
-	{
-		while(gTickCounter < timeStart);
-	}
+	while(deltaTime < dwMs);
 }

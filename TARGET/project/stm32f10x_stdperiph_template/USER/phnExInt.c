@@ -1,7 +1,6 @@
 #include "phnOsal.h"
 #include <stm32f10x.h>
 
-volatile uint32_t gExIntCounter = 0;
 
 void phnExInt_Init(void) 
 {
