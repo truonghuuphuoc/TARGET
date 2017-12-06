@@ -49,8 +49,6 @@
   * @retval None
   */
 int main(void){
-
-	GPIO_InitTypeDef GPIO_InitStructure;
 	
 	__disable_irq();
 
@@ -62,17 +60,6 @@ int main(void){
 	phnUsart1_Init();
 	phnExInt_Init();
 		
-	
-	/* GPIOD Periph clock enable */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
-
-	/* Configure PD0 and PD2 in output pushpull mode */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 	__enable_irq();
 
 	printf("start\r\n");
@@ -82,10 +69,6 @@ int main(void){
 		
 		phnOsal_DelayMs(1000);
 		
-		
-		GPIO_SetBits(GPIOA, GPIO_Pin_4);
-		phnOsal_DelayMs(1);
-		GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 	}
 }
 
