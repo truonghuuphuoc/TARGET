@@ -67,8 +67,6 @@ void phnRs485_ReceiveHandler(uint8_t data)
 {
 	uint32_t dwTime;
 	
-	printf("%02X ", data);
-	
 	switch (data)
 	{
 	case MESG_STX:   // start of text
