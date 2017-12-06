@@ -18,13 +18,6 @@
   */
 void phnRf443_Init(void);
 
-
-/**
-  * @brief  
-  * @param  None
-  * @retval None
-  */
-void phnRf443_EnableTransmit(void); 
 	 
 /**
   * @brief  
