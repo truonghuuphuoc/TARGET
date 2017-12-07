@@ -46,7 +46,7 @@ void phnMaster_Processing(void);
 void phnSlave_Processing(void);	
 #endif
 
-void phnStatus_Processing(uint16_t lastTime);
+void phnStatus_Processing(uint32_t *lastTime);
 
 #ifdef __cplusplus
 }

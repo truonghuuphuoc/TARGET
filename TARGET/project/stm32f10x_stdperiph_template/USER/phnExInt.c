@@ -1,6 +1,11 @@
-#include "phnOsal.h"
+#include "phnExint.h"
+
 #include <stm32f10x.h>
 
+
+#include "phnOsal.h"
+#include "phnCompile.h"
+#include "phnMessage.h"
 
 void phnExInt_Init(void) 
 {
@@ -223,4 +228,40 @@ void phnExInt_Init(void)
     EXTI_Init(&EXTI_InitStructure);
 }
 
+void phnExInt_ReceiveHandler(uint8_t value)
+{
+#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+	
+	uint32_t dwTime = 0;
+	
+	if( gMessageControl.mValue == PHN_DEV_OFFLINE ||
+		gMessageControl.mValue == PHN_DEV_ONLINE)
+	{
+		gMessageControl.mTime = phnOsal_GetCurrentTickCount();
+		gMessageControl.mValue = value;
+		
+		gMessageControl.mStatus = PHN_STATUS_UPDATE;
+	}
+	else
+	{
+		dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
+		
+		if(dwTime > 2000)
+		{
+			gMessageControl.mTime = phnOsal_GetCurrentTickCount();
+			gMessageControl.mValue = value;
+		
+			gMessageControl.mStatus = PHN_STATUS_UPDATE;
+		}
+		else if(value > gMessageControl.mValue)
+		{
+			gMessageControl.mTime = phnOsal_GetCurrentTickCount();
+			gMessageControl.mValue = value;
+		
+			gMessageControl.mStatus = PHN_STATUS_UPDATE;
+		}
+	}
+	
+#endif
+}
 

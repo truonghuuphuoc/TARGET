@@ -35,6 +35,7 @@ typedef struct
 	uint8_t mAck;
 	uint8_t mValue;
 	uint8_t mStatus;
+	uint32_t mTime;
 }phnMessageType_t;
 
 
@@ -58,7 +59,21 @@ void phnMessage_GetMessageFormat(uint8_t *data, uint16_t inLength, uint8_t *mess
   * @retval None
   */
 uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t deviceId);
-	 
+
+
+/**
+  * @brief  
+  * @param  None
+  * @retval None
+  */
+void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value);
+
+/**
+  * @brief  
+  * @param  None
+  * @retval None
+  */	 
+void phnMessage_LogDebug(char* message, uint8_t *data, uint16_t length);
 
 #ifdef __cplusplus
 }

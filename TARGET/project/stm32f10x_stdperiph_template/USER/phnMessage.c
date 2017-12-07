@@ -1,5 +1,6 @@
 #include "phnMessage.h"
 #include "phnCrc.h"
+#include "phnOsal.h"
 
 
 #if(PLATFORM_MASTER)
@@ -12,7 +13,7 @@ phnMessageType_t gMessageControl[3] =
 #elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
 phnMessageType_t gMessageControl =
 {
-	0x00, PHN_DEV_ONLINE, PHN_STATUS_UPDATE
+	0x00, PHN_DEV_ONLINE, PHN_STATUS_UPDATE, 0
 };
 #endif
 
@@ -77,6 +78,7 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 			}
 			else
 			{
+				gMessageControl[deviceId].mValue = PHN_DEV_ONLINE;
 				retvalue = PHN_DEV_ONLINE;
 			}
 			
@@ -93,7 +95,15 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 		}
 		else
 		{
-			retvalue = gMessageControl[deviceId].mValue;
+			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
+				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE  )
+			{
+				retvalue = gMessageControl[deviceId].mValue;				
+			}
+			else
+			{
+				gMessageControl[deviceId].mValue = PHN_DEV_ONLINE;
+			}
 		}
 	}
 	else
@@ -112,11 +122,21 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 		}
 		else
 		{
-			retvalue = gMessageControl[deviceId].mValue;
+			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
+				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE  )
+			{
+				retvalue = gMessageControl[deviceId].mValue;				
+			}
+			else
+			{
+				gMessageControl[deviceId].mValue = PHN_DEV_ONLINE;
+			}
 		}
 	}
 	
 #elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+	
+	uint32_t dwTime = 0;
 	
 	if(hostAck == deviceAck)
 	{
@@ -131,10 +151,20 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 		}
 		else if( gMessageControl.mStatus == PHN_STATUS_UPDATE)
 		{
-			retvalue = gMessageControl.mValue;
+			//check data already
+			dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
 			
-			//change status
-			gMessageControl.mStatus = PHN_STATUS_SEND;								
+			if(dwTime > 2000)
+			{
+				retvalue = gMessageControl.mValue;
+			
+				//change status
+				gMessageControl.mStatus = PHN_STATUS_SEND;								
+			}
+			else
+			{
+				retvalue = PHN_DEV_ONLINE;
+			}
 		}
 		else
 		{
@@ -150,10 +180,20 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 		}
 		else if( gMessageControl.mStatus == PHN_STATUS_UPDATE)
 		{
-			retvalue = gMessageControl.mValue;
+			//check data already
+			dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
 			
-			//change status
-			gMessageControl.mStatus = PHN_STATUS_SEND;								
+			if(dwTime > 1000)
+			{
+				retvalue = gMessageControl.mValue;
+			
+				//change status
+				gMessageControl.mStatus = PHN_STATUS_SEND;								
+			}
+			else
+			{
+				retvalue = PHN_DEV_ONLINE;
+			}								
 		}
 		else
 		{
@@ -164,3 +204,61 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 	
 	return retvalue;
 }
+
+void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value)
+{
+#if(PLATFORM_MASTER)
+	
+	//set ACK
+	if(gMessageControl[deviceId].mAck)
+	{
+		gMessageControl[deviceId].mAck = 0x00;
+	}
+	else
+	{
+		gMessageControl[deviceId].mAck = 0x01;
+	}
+	
+	if( value == PHN_DEV_OFFLINE ||
+		value == PHN_DEV_ONLINE )
+	{
+		if(gMessageControl[deviceId].mStatus == PHN_STATUS_SEND ||
+		   gMessageControl[deviceId].mStatus == PHN_STATUS_UPDATE )
+		{
+			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
+				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE )
+			{
+				//Update value
+				gMessageControl[deviceId].mValue 	= value;
+				gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;	
+			}
+		}
+		else
+		{
+			//Update value
+			gMessageControl[deviceId].mValue 	= value;
+			gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;
+		}
+	}
+	else
+	{
+		//Update value
+		gMessageControl[deviceId].mValue 	= value;
+		gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;
+	}
+#endif	
+}
+
+
+void phnMessage_LogDebug(char* message, uint8_t *data, uint16_t length)
+{
+	uint16_t index;
+	
+	printf("%s: ", message);
+	for(index = 0; index < length; index ++)
+	{
+		printf("%02X ", data[index]); 
+	}
+	printf("\r\n");
+}
+

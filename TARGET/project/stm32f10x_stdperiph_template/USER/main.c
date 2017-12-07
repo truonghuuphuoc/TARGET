@@ -135,6 +135,8 @@ void phnMaster_Processing()
 				dataRequest[1] = DEVICE_ID;
 				dataRequest[2] = gMessageControl[deviceIndex].mAck;
 			
+				phnMessage_LogDebug("REQ", dataRequest, 3);
+			
 				//format message
 				phnMessage_GetMessageFormat(dataRequest, 3, messRequest, &messLength);
 			
@@ -174,47 +176,13 @@ void phnMaster_Processing()
 					//handle data response
 					phnRs485_GetMessageReceived(messRequest, &messLength);
 					
+					phnMessage_LogDebug("RSP", messRequest, messLength);
+					
 					if( messLength == 4 && 
 						messRequest[0] == DEVICE_ID && 
 						messRequest[1] == salveDevice[deviceIndex])
 					{
-						//set ACK
-						if(gMessageControl[deviceIndex].mAck)
-						{
-							gMessageControl[deviceIndex].mAck = 0x00;
-						}
-						else
-						{
-							gMessageControl[deviceIndex].mAck = 0x01;
-						}
-						
-						if( messRequest[3] == PHN_DEV_OFFLINE ||
-							messRequest[3] == PHN_DEV_ONLINE )
-						{
-							if(gMessageControl[deviceIndex].mStatus == PHN_STATUS_SEND ||
-							   gMessageControl[deviceIndex].mStatus == PHN_STATUS_UPDATE )
-							{
-								if( gMessageControl[deviceIndex].mValue == PHN_DEV_OFFLINE ||
-									gMessageControl[deviceIndex].mValue == PHN_DEV_ONLINE )
-								{
-									//Update value
-									gMessageControl[deviceIndex].mValue 	= messRequest[3];
-									gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;	
-								}
-							}
-							else
-							{
-								//Update value
-								gMessageControl[deviceIndex].mValue 	= messRequest[3];
-								gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;
-							}
-						}
-						else
-						{
-							//Update value
-							gMessageControl[deviceIndex].mValue 	= messRequest[3];
-							gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;
-						}						
+						phnMessage_UpdateDeviceValue(deviceIndex, messRequest[3]);						
 					}
 				}
 				
@@ -237,7 +205,7 @@ void phnMaster_Processing()
 				}
 				
 				//led status process
-				phnStatus_Processing(timeStatus);
+				phnStatus_Processing(&timeStatus);
 				
 				break;
 			
@@ -331,7 +299,7 @@ void phnMaster_Processing()
 				}
 				
 				//led status process
-				phnStatus_Processing(timeStatus);
+				phnStatus_Processing(&timeStatus);
 				
 				break;
 			
@@ -399,7 +367,7 @@ void phnSlave_Processing()
 	
 	while(1)
 	{
-		phnStatus_Processing(timeStatus);
+		phnStatus_Processing(&timeStatus);
 		
 		if(!phnRs485_IsMessageReceived())
 		{
@@ -409,9 +377,12 @@ void phnSlave_Processing()
 		
 		//handle message
 		phnRs485_GetMessageReceived(messRequest, &messLength);
+		
+		phnMessage_LogDebug("RCV", messRequest, messLength);
+		
 		if( messLength == 3 && 
 			messRequest[0] == DEVICE_ID)
-		{
+		{	
 			//set time staus and led
 			timeStatus = phnOsal_GetCurrentTickCount();
 			phnLed_SetLedStatus();
@@ -428,6 +399,20 @@ void phnSlave_Processing()
 			//set value
 			dataRequest[3] = phnMessage_GetDeviceValue(messRequest[2], gMessageControl.mAck, 0);
 			
+			phnMessage_LogDebug("RSP", dataRequest, 4);
+			
+			if(gMessageControl.mAck == messRequest[2])
+			{
+				if(gMessageControl.mAck)
+				{
+					gMessageControl.mAck = 0x00;
+				}
+				else
+				{
+					gMessageControl.mAck = 0x01;
+				}
+			}
+			
 			//delay 5ms for host ready
 			phnMessage_GetMessageFormat(dataRequest, 4, messRequest, &messLength);
 			phnRs485_SendMessage(messRequest, messLength);
@@ -437,21 +422,23 @@ void phnSlave_Processing()
 #endif
 
 
-void phnStatus_Processing(uint16_t lastTime)
+void phnStatus_Processing(uint32_t *lastTime)
 {
-	uint32_t dwTime = phnOsal_GetElapseTime(lastTime);
+	uint32_t dwTime = phnOsal_GetElapseTime(*lastTime);
 	
 #if(PLATFORM_MASTER)
 	//5 second
 	if(dwTime > 5000)
 	{
 		phnLed_ClearLedStatus();
+		*lastTime = phnOsal_GetCurrentTickCount();
 	}
 #else
 	//2 second
 	if(dwTime > 3000)
 	{
 		phnLed_ClearLedStatus();
+		*lastTime = phnOsal_GetCurrentTickCount();
 	}
 #endif
 }

@@ -13,7 +13,15 @@
   * @param  None
   * @retval None
   */
-void phnExInt_Init(void); 	 
+void phnExInt_Init(void);
+
+
+/**
+  * @brief  
+  * @param  None
+  * @retval None
+  */
+void phnExInt_ReceiveHandler(uint8_t value); 	 
 	 
 
 #ifdef __cplusplus
