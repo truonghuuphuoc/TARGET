@@ -9,7 +9,7 @@
 	 
 #include "phnCompile.h"	 
 	 
-#define MESG_BUFFER_SIZE	100	 
+#define MESG_BUFFER_SIZE	50	 
 
 /*Start message*/
 #define MESG_STX			0x02
@@ -35,7 +35,11 @@ typedef struct
 	uint8_t mAck;
 	uint8_t mValue;
 	uint8_t mStatus;
+#if(PLATFORM_MASTER)
+	uint8_t mDeviceStatus;
+#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
 	uint32_t mTime;
+#endif
 }phnMessageType_t;
 
 

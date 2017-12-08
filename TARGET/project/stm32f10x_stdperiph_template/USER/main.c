@@ -135,7 +135,7 @@ void phnMaster_Processing()
 				dataRequest[1] = DEVICE_ID;
 				dataRequest[2] = gMessageControl[deviceIndex].mAck;
 			
-				phnMessage_LogDebug("REQ", dataRequest, 3);
+				//phnMessage_LogDebug("REQ", dataRequest, 3);
 			
 				//format message
 				phnMessage_GetMessageFormat(dataRequest, 3, messRequest, &messLength);
@@ -176,13 +176,31 @@ void phnMaster_Processing()
 					//handle data response
 					phnRs485_GetMessageReceived(messRequest, &messLength);
 					
-					phnMessage_LogDebug("RSP", messRequest, messLength);
+					//phnMessage_LogDebug("RSP", messRequest, messLength);
 					
 					if( messLength == 4 && 
 						messRequest[0] == DEVICE_ID && 
 						messRequest[1] == salveDevice[deviceIndex])
 					{
-						phnMessage_UpdateDeviceValue(deviceIndex, messRequest[3]);						
+						phnMessage_UpdateDeviceValue(deviceIndex, messRequest[3]);
+						
+						//set ACK
+						if(gMessageControl[deviceIndex].mAck)
+						{
+							gMessageControl[deviceIndex].mAck = 0x00;
+						}
+						else
+						{
+							gMessageControl[deviceIndex].mAck = 0x01;
+						}
+
+						//store current state
+						prevState = currState;
+						
+						//switch to idle mode
+						currState = PHN_MAST_IDLE_SLEEP;
+						
+						break;						
 					}
 				}
 				
@@ -198,8 +216,7 @@ void phnMaster_Processing()
 					currState = PHN_MAST_SEND_REQUEST;
 					
 					//Update value & not change ACK
-					gMessageControl[deviceIndex].mValue 	= PHN_DEV_OFFLINE;
-					gMessageControl[deviceIndex].mStatus 	= PHN_STATUS_UPDATE;
+					phnMessage_UpdateDeviceValue(deviceIndex, PHN_DEV_OFFLINE);
 					
 					break;
 				}
@@ -219,31 +236,23 @@ void phnMaster_Processing()
 					if(	messLength == 3 &&
 						messRequest[0] == DEVICE_ID)
 					{
-						messLength = 0;
-						
 						//set destination
-						dataRequest[messLength] = messRequest[1];
-						messLength ++;
+						dataRequest[0] = messRequest[1];
 						
 						//set its address
-						dataRequest[messLength] = DEVICE_ID;
-						messLength ++;
+						dataRequest[1] = DEVICE_ID;
 						
 						//set ACK
-						dataRequest[messLength] = messRequest[2];
-						messLength ++;
+						dataRequest[2] = messRequest[2];
 						
 						//set value of slave 1
-						dataRequest[messLength] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 0);
-						messLength ++;
+						dataRequest[3] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 0);
 						
 						//set value of slave 2
-						dataRequest[messLength] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 1);
-						messLength ++;
+						dataRequest[4] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 1);
 						
 						//set value of slave 3
-						dataRequest[messLength] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 2);
-						messLength ++;
+						dataRequest[5] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 2);
 						
 						//set host ACK
 						if(messRequest[2] == deviceAck)
@@ -262,8 +271,6 @@ void phnMaster_Processing()
 						phnMessage_GetMessageFormat(dataRequest, 6, messRequest, &messLength);
 						phnRf443_SendMessage(messRequest, messLength);
 					}
-					
-					break;
 				}
 				
 				//set state machine
@@ -378,7 +385,7 @@ void phnSlave_Processing()
 		//handle message
 		phnRs485_GetMessageReceived(messRequest, &messLength);
 		
-		phnMessage_LogDebug("RCV", messRequest, messLength);
+		//phnMessage_LogDebug("RCV", messRequest, messLength);
 		
 		if( messLength == 3 && 
 			messRequest[0] == DEVICE_ID)
@@ -399,7 +406,7 @@ void phnSlave_Processing()
 			//set value
 			dataRequest[3] = phnMessage_GetDeviceValue(messRequest[2], gMessageControl.mAck, 0);
 			
-			phnMessage_LogDebug("RSP", dataRequest, 4);
+			//phnMessage_LogDebug("RSP", dataRequest, 4);
 			
 			if(gMessageControl.mAck == messRequest[2])
 			{

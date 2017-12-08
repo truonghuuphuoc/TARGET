@@ -234,19 +234,18 @@ void phnExInt_ReceiveHandler(uint8_t value)
 	
 	uint32_t dwTime = 0;
 	
-	if( gMessageControl.mValue == PHN_DEV_OFFLINE ||
-		gMessageControl.mValue == PHN_DEV_ONLINE)
+	if(gMessageControl.mStatus == PHN_STATUS_DONE)
 	{
 		gMessageControl.mTime = phnOsal_GetCurrentTickCount();
 		gMessageControl.mValue = value;
-		
+	
 		gMessageControl.mStatus = PHN_STATUS_UPDATE;
 	}
 	else
 	{
 		dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
-		
-		if(dwTime > 2000)
+			
+		if(dwTime > 1000)
 		{
 			gMessageControl.mTime = phnOsal_GetCurrentTickCount();
 			gMessageControl.mValue = value;

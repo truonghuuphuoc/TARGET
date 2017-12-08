@@ -6,9 +6,24 @@
 #if(PLATFORM_MASTER)
 phnMessageType_t gMessageControl[3] = 
 {
-	{0x00, PHN_DEV_OFFLINE, PHN_STATUS_UPDATE},
-	{0x00, PHN_DEV_OFFLINE, PHN_STATUS_UPDATE},
-	{0x00, PHN_DEV_OFFLINE, PHN_STATUS_UPDATE},
+	{	
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
 };
 #elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
 phnMessageType_t gMessageControl =
@@ -66,139 +81,82 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 {
 	uint8_t retvalue = PHN_DEV_OFFLINE;
 
-#if(PLATFORM_MASTER)	
-	if(hostAck == deviceAck)
+#if(PLATFORM_MASTER)
+	
+	if(gMessageControl[deviceId].mStatus == PHN_STATUS_DONE)
 	{
-		if(gMessageControl[deviceId].mStatus == PHN_STATUS_SEND)
+		retvalue = gMessageControl[deviceId].mDeviceStatus;
+	}
+	else if(gMessageControl[deviceId].mStatus == PHN_STATUS_UPDATE)
+	{
+		retvalue = gMessageControl[deviceId].mValue;
+		
+		//change status
+		gMessageControl[deviceId].mStatus = PHN_STATUS_SEND;
+	}
+	else if(gMessageControl[deviceId].mStatus == PHN_STATUS_SEND)
+	{
+		if(hostAck == deviceAck)
 		{
-			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
-				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE  )
-			{
-				retvalue = gMessageControl[deviceId].mValue;				
-			}
-			else
-			{
-				gMessageControl[deviceId].mValue = PHN_DEV_ONLINE;
-				retvalue = PHN_DEV_ONLINE;
-			}
-			
 			//change status
 			gMessageControl[deviceId].mStatus = PHN_STATUS_DONE;
 			
-		}
-		else if( gMessageControl[deviceId].mStatus == PHN_STATUS_UPDATE)
-		{
-			retvalue = gMessageControl[deviceId].mValue;
-			
-			//change status
-			gMessageControl[deviceId].mStatus = PHN_STATUS_SEND;								
+			retvalue = gMessageControl[deviceId].mDeviceStatus;
 		}
 		else
 		{
-			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
-				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE  )
-			{
-				retvalue = gMessageControl[deviceId].mValue;				
-			}
-			else
-			{
-				gMessageControl[deviceId].mValue = PHN_DEV_ONLINE;
-			}
+			//send again
+			retvalue = gMessageControl[deviceId].mValue;
 		}
 	}
 	else
 	{
-		if(gMessageControl[deviceId].mStatus == PHN_STATUS_SEND)
-		{
-			//set value
-			retvalue = gMessageControl[deviceId].mValue;
-		}
-		else if( gMessageControl[deviceId].mStatus == PHN_STATUS_UPDATE)
-		{
-			retvalue = gMessageControl[deviceId].mValue;
-			
-			//change status
-			gMessageControl[deviceId].mStatus = PHN_STATUS_SEND;								
-		}
-		else
-		{
-			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
-				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE  )
-			{
-				retvalue = gMessageControl[deviceId].mValue;				
-			}
-			else
-			{
-				gMessageControl[deviceId].mValue = PHN_DEV_ONLINE;
-			}
-		}
+		retvalue = gMessageControl[deviceId].mDeviceStatus;
 	}
 	
 #elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
 	
 	uint32_t dwTime = 0;
 	
-	if(hostAck == deviceAck)
+	if( gMessageControl.mStatus == PHN_STATUS_DONE)
 	{
-		if(gMessageControl.mStatus == PHN_STATUS_SEND)
+		retvalue = PHN_DEV_ONLINE;
+	}
+	else if( gMessageControl.mStatus == PHN_STATUS_UPDATE)
+	{
+		//check data already
+		dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
+		
+		if(dwTime > 1000)
 		{
-			
-			retvalue = PHN_DEV_ONLINE;
-			
+			retvalue = gMessageControl.mValue;
+		
 			//change status
-			gMessageControl.mStatus = PHN_STATUS_DONE;
-			
-		}
-		else if( gMessageControl.mStatus == PHN_STATUS_UPDATE)
-		{
-			//check data already
-			dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
-			
-			if(dwTime > 2000)
-			{
-				retvalue = gMessageControl.mValue;
-			
-				//change status
-				gMessageControl.mStatus = PHN_STATUS_SEND;								
-			}
-			else
-			{
-				retvalue = PHN_DEV_ONLINE;
-			}
+			gMessageControl.mStatus = PHN_STATUS_SEND;								
 		}
 		else
 		{
 			retvalue = PHN_DEV_ONLINE;
 		}
 	}
-	else
+	else if( gMessageControl.mStatus == PHN_STATUS_SEND)
 	{
-		if(gMessageControl.mStatus == PHN_STATUS_SEND)
+		if(hostAck == deviceAck)
 		{
-			//set value
-			retvalue = gMessageControl.mValue;
-		}
-		else if( gMessageControl.mStatus == PHN_STATUS_UPDATE)
-		{
-			//check data already
-			dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
+			retvalue = PHN_DEV_ONLINE;
 			
-			if(dwTime > 1000)
-			{
-				retvalue = gMessageControl.mValue;
-			
-				//change status
-				gMessageControl.mStatus = PHN_STATUS_SEND;								
-			}
-			else
-			{
-				retvalue = PHN_DEV_ONLINE;
-			}								
+			//change status
+			gMessageControl.mStatus = PHN_STATUS_DONE;
 		}
 		else
 		{
-			retvalue = PHN_DEV_ONLINE;
+			//send again
+			retvalue = gMessageControl.mValue;
 		}
+	}
+	else
+	{
+		retvalue = PHN_DEV_ONLINE;
 	}
 #endif	
 	
@@ -207,44 +165,20 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 
 void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value)
 {
-#if(PLATFORM_MASTER)
-	
-	//set ACK
-	if(gMessageControl[deviceId].mAck)
+#if(PLATFORM_MASTER)	
+	if(value == PHN_DEV_OFFLINE)
 	{
-		gMessageControl[deviceId].mAck = 0x00;
+		gMessageControl[deviceId].mDeviceStatus = value;
+	}
+	else if(value == PHN_DEV_ONLINE)
+	{
+		gMessageControl[deviceId].mDeviceStatus = value;
 	}
 	else
 	{
-		gMessageControl[deviceId].mAck = 0x01;
-	}
-	
-	if( value == PHN_DEV_OFFLINE ||
-		value == PHN_DEV_ONLINE )
-	{
-		if(gMessageControl[deviceId].mStatus == PHN_STATUS_SEND ||
-		   gMessageControl[deviceId].mStatus == PHN_STATUS_UPDATE )
-		{
-			if( gMessageControl[deviceId].mValue == PHN_DEV_OFFLINE ||
-				gMessageControl[deviceId].mValue == PHN_DEV_ONLINE )
-			{
-				//Update value
-				gMessageControl[deviceId].mValue 	= value;
-				gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;	
-			}
-		}
-		else
-		{
-			//Update value
-			gMessageControl[deviceId].mValue 	= value;
-			gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;
-		}
-	}
-	else
-	{
-		//Update value
+		//update value
 		gMessageControl[deviceId].mValue 	= value;
-		gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;
+		gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;	
 	}
 #endif	
 }
