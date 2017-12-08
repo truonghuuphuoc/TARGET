@@ -420,7 +420,10 @@ void phnSlave_Processing()
 				}
 			}
 			
-			//delay 5ms for host ready
+			//delay 10ms for host ready
+			phnOsal_DelayMs(10);
+			
+			//send message response
 			phnMessage_GetMessageFormat(dataRequest, 4, messRequest, &messLength);
 			phnRs485_SendMessage(messRequest, messLength);
 		}

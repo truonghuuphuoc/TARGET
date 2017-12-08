@@ -178,7 +178,9 @@ void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value)
 	{
 		//update value
 		gMessageControl[deviceId].mValue 	= value;
-		gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;	
+		gMessageControl[deviceId].mStatus 	= PHN_STATUS_UPDATE;
+
+		gMessageControl[deviceId].mDeviceStatus = PHN_DEV_ONLINE;		
 	}
 #endif	
 }
