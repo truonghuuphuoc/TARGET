@@ -44,6 +44,7 @@
 
 
 
+
 /**
   * @brief  Main program
   * @param  None
@@ -206,8 +207,8 @@ void phnMaster_Processing()
 				
 				deltaTime = phnOsal_GetElapseTime(prevTime);
 				
-				//500 millisecond 
-				if(deltaTime >= 500)
+				//PHN_MAST_REQ_TIME millisecond 
+				if(deltaTime > PHN_MAST_REQ_TIME)
 				{
 					//store current state
 					prevState = currState;
@@ -232,6 +233,8 @@ void phnMaster_Processing()
 				if(phnRf443_IsMessageReceived())
 				{
 					phnRf443_GetMessageReceived(messRequest, &messLength);
+					
+					//phnMessage_LogDebug("RCV", messRequest, messLength);
 					
 					if(	messLength == 3 &&
 						messRequest[0] == DEVICE_ID)
@@ -270,6 +273,7 @@ void phnMaster_Processing()
 						//send message reponse to host
 						phnMessage_GetMessageFormat(dataRequest, 6, messRequest, &messLength);
 						phnRf443_SendMessage(messRequest, messLength);
+						//phnMessage_LogDebug("RES", dataRequest, 6);
 					}
 				}
 				
@@ -293,8 +297,8 @@ void phnMaster_Processing()
 				
 				deltaTime = phnOsal_GetElapseTime(prevTime);
 				
-				//500 millisecond 
-				if(deltaTime >= 500)
+				//PHN_MAST_REQ_TIME millisecond 
+				if(deltaTime > PHN_MAST_REQ_TIME)
 				{
 					//store current state
 					prevState = currState;
@@ -420,8 +424,8 @@ void phnSlave_Processing()
 				}
 			}
 			
-			//delay 10ms for host ready
-			phnOsal_DelayMs(10);
+			//delay 5ms for host ready
+			phnOsal_DelayMs(5);
 			
 			//send message response
 			phnMessage_GetMessageFormat(dataRequest, 4, messRequest, &messLength);
@@ -511,11 +515,13 @@ PUTCHAR_PROTOTYPE
 	
 	/* Loop until the end of transmission */
 	while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
+	//while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET)
 	{}
 		
 	/* Place your implementation of fputc here */
 	/* e.g. write a character to the USART */
 	USART_SendData(USART1, (uint8_t) ch);
+	//USART_SendData(USART2, (uint8_t) ch);
 
 	return ch;
 }

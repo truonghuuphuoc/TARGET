@@ -3,6 +3,7 @@
 #include "phnOsal.h"
 
 
+
 #if(PLATFORM_MASTER)
 phnMessageType_t gMessageControl[3] = 
 {
@@ -127,7 +128,7 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 		//check data already
 		dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
 		
-		if(dwTime > 1000)
+		if(dwTime > PHN_SLAVE_TARGET_UPDATE)
 		{
 			retvalue = gMessageControl.mValue;
 		

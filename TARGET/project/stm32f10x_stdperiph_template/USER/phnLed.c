@@ -73,7 +73,7 @@ void phnLed_SetDeviceLeds(uint8_t device)
 			break;
 		
 		case LED_DEV_SLAVE_3:
-			GPIO_SetBits(GPIOB, GPIO_Pin_11);
+			GPIO_SetBits(GPIOB, GPIO_Pin_13);
 			GPIO_SetBits(GPIOB, GPIO_Pin_12);
 			break;
 		

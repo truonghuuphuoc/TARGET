@@ -245,7 +245,7 @@ void phnExInt_ReceiveHandler(uint8_t value)
 	{
 		dwTime = phnOsal_GetElapseTime(gMessageControl.mTime);
 			
-		if(dwTime > 1000)
+		if(dwTime > PHN_SLAVE_TARGET_UPDATE)
 		{
 			gMessageControl.mTime = phnOsal_GetCurrentTickCount();
 			gMessageControl.mValue = value;
