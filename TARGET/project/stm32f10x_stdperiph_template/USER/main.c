@@ -164,10 +164,6 @@ void phnMaster_Processing()
 					//switch to response mode
 					currState = PHN_MAST_RESP_HOST;
 					
-					//set last time receive message
-					timeStatus = phnOsal_GetCurrentTickCount();
-					phnLed_SetLedStatus();
-					
 					break;
 				}
 				
@@ -269,6 +265,10 @@ void phnMaster_Processing()
 								deviceAck = 0x01;
 							}
 						}
+						
+						//set last time receive message
+						timeStatus = phnOsal_GetCurrentTickCount();
+						phnLed_SetLedStatus();
 						
 						//send message reponse to host
 						phnMessage_GetMessageFormat(dataRequest, 6, messRequest, &messLength);
