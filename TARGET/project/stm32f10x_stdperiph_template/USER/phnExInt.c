@@ -25,6 +25,7 @@ void phnExInt_Init(void)
 	/* Configure pin as input floating */
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	/* Connect EXTI Line to Button GPIO Pin */
