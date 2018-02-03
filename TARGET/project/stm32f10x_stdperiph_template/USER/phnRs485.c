@@ -177,11 +177,21 @@ void phnRs485_SendMessage(uint8_t *message, uint16_t length)
 {
 	phnRs485_EnableTransmit();
 	
-	phnUsart2_SendBuffer(message, length);
+	message[length] = 0x00;
+	length ++;
 	
-	phnUsart2_SendBuffer((uint8_t *)"\x00\x00", 2);
+	message[length] = 0x00;
+	length ++;
+	
+	phnUsart2_SendBuffer(message, length);
 	
 	phnRs485_EnableReceive();
 }
 
+
+void phnRs485_ClearReceivedMessage()
+{
+	gRs485_DataPosition 	= 0;
+	gRs485_IsMessageRecv	= 0;
+}
 

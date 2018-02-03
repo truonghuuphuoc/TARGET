@@ -21,7 +21,10 @@
 #define USART1_TX_PIN			GPIO_Pin_9
 #define USART1_GPIO_CLK			RCC_APB2Periph_GPIOA
 #define USART1_RX_PIN			GPIO_Pin_10
-#define USART1_GPIO_PORT		GPIOA
+#define USART1_GPIO_PORT		GPIOA	 
+#define USART1_Tx_DMA_Channel   DMA1_Channel4
+#define USART1_Tx_DMA_FLAG      DMA1_FLAG_TC4
+#define USART1_DR_Base          0x40013804
 
 
 /**
@@ -32,6 +35,9 @@
 #define USART2_GPIO_CLK			RCC_APB2Periph_GPIOA
 #define USART2_RX_PIN			GPIO_Pin_3
 #define USART2_GPIO_PORT		GPIOA
+#define USART2_Tx_DMA_Channel   DMA1_Channel7
+#define USART2_Tx_DMA_FLAG      DMA1_FLAG_TC7
+#define USART2_DR_Base          0x40004404
  
 /**
   * @brief  USART 1.

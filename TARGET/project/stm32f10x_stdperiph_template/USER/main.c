@@ -32,19 +32,6 @@
 #include "phnExInt.h"
 #include "phnLed.h"
 
-
-#ifdef __GNUC__
-  /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
-     set to 'Yes') calls __io_putchar() */
-  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
-  
-
-
-
-
 /**
   * @brief  Main program
   * @param  None
@@ -52,12 +39,48 @@
   */
 int main(void)
 {
+	uint8_t buffer[1024];
+	
+	
+	//Disalbe all interrupt
+	__disable_irq();
 
-#if(PLATFORM_MASTER)
-	phnMaster_Processing();
-#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
-	phnSlave_Processing();
-#endif	
+	//System initialize
+	SystemInit();
+
+	//Osal initialize
+	phnOsal_Init();
+	
+	//Interrupt priority initialize
+	phnNvic_InitGroup();
+	
+	//Rf443 initialize
+	phnUsart1_Init();
+	
+	//Rs485 initialize
+	phnUsart2_Init();
+	
+	//Led of status and device intitialize	
+	phnLed_Init();
+	
+	//Enable all interrupt
+	__enable_irq();
+	
+	memset(buffer, 'a', sizeof(buffer));
+	buffer[1020] = '\r';
+	buffer[1021] = '\n';
+	buffer[1022] = '\r';
+	buffer[1023] = '\n';
+	
+	while(1)
+	{
+		phnUsart2_SendBuffer(buffer, sizeof(buffer));
+		phnUsart2_SendData('b');
+		printf("%s", buffer);
+		phnOsal_DelayMs(3000);
+		
+	
+	}
 
 }
 
@@ -136,7 +159,6 @@ void phnMaster_Processing()
 				dataRequest[1] = DEVICE_ID;
 				dataRequest[2] = gMessageControl[deviceIndex].mAck;
 			
-				//phnMessage_LogDebug("REQ", dataRequest, 3);
 			
 				//format message
 				phnMessage_GetMessageFormat(dataRequest, 3, messRequest, &messLength);
@@ -172,8 +194,6 @@ void phnMaster_Processing()
 				{
 					//handle data response
 					phnRs485_GetMessageReceived(messRequest, &messLength);
-					
-					//phnMessage_LogDebug("RSP", messRequest, messLength);
 					
 					if( messLength == 4 && 
 						messRequest[0] == DEVICE_ID && 
@@ -230,8 +250,6 @@ void phnMaster_Processing()
 				{
 					phnRf443_GetMessageReceived(messRequest, &messLength);
 					
-					//phnMessage_LogDebug("RCV", messRequest, messLength);
-					
 					if(	messLength == 3 &&
 						messRequest[0] == DEVICE_ID)
 					{
@@ -273,7 +291,6 @@ void phnMaster_Processing()
 						//send message reponse to host
 						phnMessage_GetMessageFormat(dataRequest, 6, messRequest, &messLength);
 						phnRf443_SendMessage(messRequest, messLength);
-						//phnMessage_LogDebug("RES", dataRequest, 6);
 					}
 				}
 				
@@ -389,7 +406,6 @@ void phnSlave_Processing()
 		//handle message
 		phnRs485_GetMessageReceived(messRequest, &messLength);
 		
-		//phnMessage_LogDebug("RCV", messRequest, messLength);
 		
 		if( messLength == 3 && 
 			messRequest[0] == DEVICE_ID)
@@ -409,8 +425,6 @@ void phnSlave_Processing()
 			
 			//set value
 			dataRequest[3] = phnMessage_GetDeviceValue(messRequest[2], gMessageControl.mAck, 0);
-			
-			//phnMessage_LogDebug("RSP", dataRequest, 4);
 			
 			if(gMessageControl.mAck == messRequest[2])
 			{
@@ -507,23 +521,6 @@ void phnNvic_InitGroup()
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
-}
-
-
-PUTCHAR_PROTOTYPE
-{
-	
-	/* Loop until the end of transmission */
-	while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
-	//while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET)
-	{}
-		
-	/* Place your implementation of fputc here */
-	/* e.g. write a character to the USART */
-	USART_SendData(USART1, (uint8_t) ch);
-	//USART_SendData(USART2, (uint8_t) ch);
-
-	return ch;
 }
 
 #ifdef  USE_FULL_ASSERT

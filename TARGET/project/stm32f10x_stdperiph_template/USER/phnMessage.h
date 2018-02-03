@@ -72,12 +72,6 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
   */
 void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value);
 
-/**
-  * @brief  
-  * @param  None
-  * @retval None
-  */	 
-void phnMessage_LogDebug(char* message, uint8_t *data, uint16_t length);
 
 #ifdef __cplusplus
 }

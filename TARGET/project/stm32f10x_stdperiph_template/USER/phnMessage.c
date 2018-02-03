@@ -186,16 +186,3 @@ void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value)
 #endif	
 }
 
-
-void phnMessage_LogDebug(char* message, uint8_t *data, uint16_t length)
-{
-	uint16_t index;
-	
-	printf("%s: ", message);
-	for(index = 0; index < length; index ++)
-	{
-		printf("%02X ", data[index]); 
-	}
-	printf("\r\n");
-}
-
