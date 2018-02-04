@@ -35,17 +35,17 @@ typedef struct
 	uint8_t mAck;
 	uint8_t mValue;
 	uint8_t mStatus;
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 	uint8_t mDeviceStatus;
-#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#elif(PHN_SLAVE_PLATFORM)
 	uint32_t mTime;
 #endif
 }phnMessageType_t;
 
 
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 extern phnMessageType_t gMessageControl[3];
-#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#elif(PHN_SLAVE_PLATFORM)
 extern phnMessageType_t gMessageControl;
 #endif
 	 

@@ -27,7 +27,7 @@ typedef enum
   */	 
 void phnNvic_InitGroup(void);
 
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 /**
   * @brief  Main process of master.
   * @param  None
@@ -37,7 +37,7 @@ void phnMaster_Processing(void);
 #endif
 	 
 
-#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#if(PHN_SLAVE_PLATFORM)
 /**
   * @brief  Main process of salve.
   * @param  None

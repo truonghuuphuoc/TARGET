@@ -53,15 +53,15 @@
 int main(void)
 {
 
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 	phnMaster_Processing();
-#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#elif(PHN_SLAVE_PLATFORM)
 	phnSlave_Processing();
 #endif	
 
 }
 
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 void phnMaster_Processing()
 {
 	uint8_t deviceAck		= 0x00;
@@ -80,9 +80,12 @@ void phnMaster_Processing()
 	uint8_t currState	= 0x00;
 	uint8_t prevState	= 0x00;
 	
-	uint8_t salveDevice[3] = {	PHN_SLAVE_1_DEV_ID, 
-								PHN_SLAVE_2_DEV_ID, 
-								PHN_SLAVE_3_DEV_ID};
+	uint8_t salveDevice[PHN_NB_SALVE] = 
+	{	PHN_SLAVE_1_DEV_ID, 
+		PHN_SLAVE_2_DEV_ID, 
+		PHN_SLAVE_3_DEV_ID,
+		PHN_SLAVE_4_DEV_ID
+	};
 	
 	//Disalbe all interrupt
 	__disable_irq();
@@ -129,14 +132,14 @@ void phnMaster_Processing()
 			case PHN_MAST_SEND_REQUEST:
 				
 				//increase index of slave device
-				deviceIndex = (deviceIndex + 1) % 3;
+				deviceIndex = (deviceIndex + 1) % PHN_NB_SALVE;
 				
 				//fill data request
 				dataRequest[0] = salveDevice[deviceIndex];
 				dataRequest[1] = DEVICE_ID;
 				dataRequest[2] = gMessageControl[deviceIndex].mAck;
 			
-				//phnMessage_LogDebug("REQ", dataRequest, 3);
+				phnMessage_LogDebug("REQ", dataRequest, 3);
 			
 				//format message
 				phnMessage_GetMessageFormat(dataRequest, 3, messRequest, &messLength);
@@ -170,10 +173,14 @@ void phnMaster_Processing()
 				//recevie message slave respond
 				if(phnRs485_IsMessageReceived())
 				{
+					deltaTime = phnOsal_GetElapseTime(prevTime);
+					
+					printf("Recv: %d\r\n", deltaTime);
+					
 					//handle data response
 					phnRs485_GetMessageReceived(messRequest, &messLength);
 					
-					//phnMessage_LogDebug("RSP", messRequest, messLength);
+					phnMessage_LogDebug("RSP", messRequest, messLength);
 					
 					if( messLength == 4 && 
 						messRequest[0] == DEVICE_ID && 
@@ -206,6 +213,8 @@ void phnMaster_Processing()
 				//PHN_MAST_REQ_TIME millisecond 
 				if(deltaTime > PHN_MAST_REQ_TIME)
 				{
+					printf("Timeout: %d\r\n", deltaTime);
+					
 					//store current state
 					prevState = currState;
 					
@@ -326,7 +335,7 @@ void phnMaster_Processing()
 }
 #endif
 
-#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#if(PHN_SLAVE_PLATFORM)
 void phnSlave_Processing()
 {
 	uint32_t timeStatus 	= 0x00;
@@ -364,11 +373,11 @@ void phnSlave_Processing()
 	__enable_irq();
 	
 	//Set Slave Led
-#if(PLATFORM_SALVE_1)
+#if(PLATFORM_SLAVE_1)
 	phnLed_SetDeviceLeds(LED_DEV_SLAVE_1);
-#elif(PLATFORM_SALVE_2)
+#elif(PLATFORM_SLAVE_2)
 	phnLed_SetDeviceLeds(LED_DEV_SLAVE_2);
-#elif(PLATFORM_SALVE_3)
+#elif(PLATFORM_SLAVE_3)
 	phnLed_SetDeviceLeds(LED_DEV_SLAVE_3);
 #endif
 	
@@ -440,7 +449,7 @@ void phnStatus_Processing(uint32_t *lastTime)
 {
 	uint32_t dwTime = phnOsal_GetElapseTime(*lastTime);
 	
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 	//5 second
 	if(dwTime > 5000)
 	{

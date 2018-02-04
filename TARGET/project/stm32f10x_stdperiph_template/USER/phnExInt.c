@@ -231,7 +231,7 @@ void phnExInt_Init(void)
 
 void phnExInt_ReceiveHandler(uint8_t value)
 {
-#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#if(PHN_SLAVE_PLATFORM)
 	
 	uint32_t dwTime = 0;
 	

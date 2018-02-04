@@ -155,12 +155,12 @@ void USART1_IRQHandler(void)
 		//(void) USART1->DR;
 		recv = USART_ReceiveData(USART1);
 		
-#if(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#if(PHN_SLAVE_PLATFORM)
 		if(recv == 'v' || recv == 'V')
 		{
 			printf("%s\r\n", FIRMWARE_VER);	
 		}
-#elif(PLATFORM_MASTER)
+#elif(PHN_MASTER_PLATFORM)
 		phnRf443_ReceiveHandler(recv);
 		
 		if(recv == 'v' || recv == 'V')

@@ -4,7 +4,7 @@
 
 
 
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 phnMessageType_t gMessageControl[3] = 
 {
 	{	
@@ -26,7 +26,7 @@ phnMessageType_t gMessageControl[3] =
 		PHN_DEV_OFFLINE,
 	},
 };
-#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#elif(PHN_SLAVE_PLATFORM)
 phnMessageType_t gMessageControl =
 {
 	0x00, PHN_DEV_ONLINE, PHN_STATUS_UPDATE, 0
@@ -82,7 +82,7 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 {
 	uint8_t retvalue = PHN_DEV_OFFLINE;
 
-#if(PLATFORM_MASTER)
+#if(PHN_MASTER_PLATFORM)
 	
 	if(gMessageControl[deviceId].mStatus == PHN_STATUS_DONE)
 	{
@@ -115,7 +115,7 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 		retvalue = gMessageControl[deviceId].mDeviceStatus;
 	}
 	
-#elif(PLATFORM_SALVE_1 || PLATFORM_SALVE_2 || PLATFORM_SALVE_3)
+#elif(PHN_SLAVE_PLATFORM)
 	
 	uint32_t dwTime = 0;
 	
@@ -166,7 +166,7 @@ uint8_t phnMessage_GetDeviceValue(uint8_t hostAck, uint8_t deviceAck, uint8_t de
 
 void phnMessage_UpdateDeviceValue(uint8_t deviceId, uint8_t value)
 {
-#if(PLATFORM_MASTER)	
+#if(PHN_MASTER_PLATFORM)	
 	if(value == PHN_DEV_OFFLINE)
 	{
 		gMessageControl[deviceId].mDeviceStatus = value;
