@@ -63,7 +63,14 @@ void phnRs485_GetMessageReceived(uint8_t *message, uint16_t *length);
   * @param  None
   * @retval None
   */
-void phnRs485_SendMessage(uint8_t *message, uint16_t length); 
+void phnRs485_SendMessage(uint8_t *message, uint16_t length);
+
+/**
+  * @brief  
+  * @param  None
+  * @retval None
+  */
+void phnRs485_ClearReceivedMessage(void);
 
 #ifdef __cplusplus
 }

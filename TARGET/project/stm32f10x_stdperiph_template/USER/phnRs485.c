@@ -184,4 +184,9 @@ void phnRs485_SendMessage(uint8_t *message, uint16_t length)
 	phnRs485_EnableReceive();
 }
 
+void phnRs485_ClearReceivedMessage()
+{
+	gRs485_DataPosition 	= 0;
+	gRs485_IsMessageRecv	= 0;
+}
 

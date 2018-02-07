@@ -5,26 +5,63 @@
 
 
 #if(PHN_MASTER_PLATFORM)
-phnMessageType_t gMessageControl[3] = 
+phnMessageType_t gMessageControl[PHN_NB_SALVE] = 
 {
-	{	
+	{	/*1*/	
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	
+	{	/*2*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	
+	{	/*3*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
+	{	/*4*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*5*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*6*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*7*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*8*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*9*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	
 };
 #elif(PHN_SLAVE_PLATFORM)
 phnMessageType_t gMessageControl =

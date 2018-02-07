@@ -79,12 +79,19 @@ void phnMaster_Processing()
 	
 	uint8_t currState	= 0x00;
 	uint8_t prevState	= 0x00;
+	uint8_t numIndex	= 0;
 	
 	uint8_t salveDevice[PHN_NB_SALVE] = 
-	{	PHN_SLAVE_1_DEV_ID, 
+	{	
+		PHN_SLAVE_1_DEV_ID, 
 		PHN_SLAVE_2_DEV_ID, 
 		PHN_SLAVE_3_DEV_ID,
-		PHN_SLAVE_4_DEV_ID
+		PHN_SLAVE_4_DEV_ID, 
+		PHN_SLAVE_5_DEV_ID, 
+		PHN_SLAVE_6_DEV_ID,
+		PHN_SLAVE_7_DEV_ID, 
+		PHN_SLAVE_8_DEV_ID,
+		PHN_SLAVE_9_DEV_ID
 	};
 	
 	//Disalbe all interrupt
@@ -131,6 +138,8 @@ void phnMaster_Processing()
 		{
 			case PHN_MAST_SEND_REQUEST:
 				
+				phnRs485_ClearReceivedMessage();
+				
 				//increase index of slave device
 				deviceIndex = (deviceIndex + 1) % PHN_NB_SALVE;
 				
@@ -139,7 +148,7 @@ void phnMaster_Processing()
 				dataRequest[1] = DEVICE_ID;
 				dataRequest[2] = gMessageControl[deviceIndex].mAck;
 			
-				phnMessage_LogDebug("REQ", dataRequest, 3);
+				//phnMessage_LogDebug("REQ", dataRequest, 3);
 			
 				//format message
 				phnMessage_GetMessageFormat(dataRequest, 3, messRequest, &messLength);
@@ -173,14 +182,10 @@ void phnMaster_Processing()
 				//recevie message slave respond
 				if(phnRs485_IsMessageReceived())
 				{
-					deltaTime = phnOsal_GetElapseTime(prevTime);
-					
-					printf("Recv: %d\r\n", deltaTime);
-					
 					//handle data response
 					phnRs485_GetMessageReceived(messRequest, &messLength);
 					
-					phnMessage_LogDebug("RSP", messRequest, messLength);
+					//phnMessage_LogDebug("RSP", messRequest, messLength);
 					
 					if( messLength == 4 && 
 						messRequest[0] == DEVICE_ID && 
@@ -213,7 +218,6 @@ void phnMaster_Processing()
 				//PHN_MAST_REQ_TIME millisecond 
 				if(deltaTime > PHN_MAST_REQ_TIME)
 				{
-					printf("Timeout: %d\r\n", deltaTime);
 					
 					//store current state
 					prevState = currState;
@@ -253,14 +257,11 @@ void phnMaster_Processing()
 						//set ACK
 						dataRequest[2] = messRequest[2];
 						
-						//set value of slave 1
-						dataRequest[3] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 0);
-						
-						//set value of slave 2
-						dataRequest[4] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 1);
-						
-						//set value of slave 3
-						dataRequest[5] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, 2);
+						for(numIndex =0; numIndex < PHN_NB_SALVE; numIndex ++)
+						{
+							//set value of slave 
+							dataRequest[3 + numIndex] = phnMessage_GetDeviceValue( messRequest[2], deviceAck, numIndex);
+						}
 						
 						//set host ACK
 						if(messRequest[2] == deviceAck)
@@ -280,7 +281,7 @@ void phnMaster_Processing()
 						phnLed_SetLedStatus();
 						
 						//send message reponse to host
-						phnMessage_GetMessageFormat(dataRequest, 6, messRequest, &messLength);
+						phnMessage_GetMessageFormat(dataRequest, 3 + PHN_NB_SALVE, messRequest, &messLength);
 						phnRf443_SendMessage(messRequest, messLength);
 						//phnMessage_LogDebug("RES", dataRequest, 6);
 					}

@@ -44,7 +44,7 @@ typedef struct
 
 
 #if(PHN_MASTER_PLATFORM)
-extern phnMessageType_t gMessageControl[3];
+extern phnMessageType_t gMessageControl[PHN_NB_SALVE];
 #elif(PHN_SLAVE_PLATFORM)
 extern phnMessageType_t gMessageControl;
 #endif
