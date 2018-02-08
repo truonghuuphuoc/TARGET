@@ -34,8 +34,8 @@
 #define PLATFORM_MASTER 				0
 #define PLATFORM_SLAVE_1 				0
 #define PLATFORM_SLAVE_2 				0
-#define PLATFORM_SLAVE_3 				0
-#define PLATFORM_SLAVE_4 				1
+#define PLATFORM_SLAVE_3 				1
+#define PLATFORM_SLAVE_4 				0
 #define PLATFORM_SLAVE_5 				0
 #define PLATFORM_SLAVE_6 				0
 #define PLATFORM_SLAVE_7 				0
@@ -64,7 +64,6 @@
 
 #if (	PLATFORM_SLAVE_1 	+ \
 		PLATFORM_SLAVE_2 	+ \
-		PLATFORM_SLAVE_3 	+ \
 		PLATFORM_SLAVE_3 	+ \
 		PLATFORM_SLAVE_4 	+ \
 		PLATFORM_SLAVE_5 	+ \
