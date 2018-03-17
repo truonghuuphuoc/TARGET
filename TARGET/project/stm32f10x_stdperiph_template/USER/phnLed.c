@@ -61,7 +61,9 @@ void phnLed_SetDeviceLeds(uint8_t device)
 	switch(device)
 	{
 		case LED_DEV_MASSTER:
-			GPIO_SetBits(GPIOB, GPIO_Pin_11);
+			GPIO_ResetBits(GPIOB, GPIO_Pin_11);
+			GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+			GPIO_ResetBits(GPIOB, GPIO_Pin_13);
 			break;
 		
 		case LED_DEV_SLAVE_1:
@@ -74,7 +76,6 @@ void phnLed_SetDeviceLeds(uint8_t device)
 		
 		case LED_DEV_SLAVE_3:
 			GPIO_SetBits(GPIOB, GPIO_Pin_11);
-			GPIO_SetBits(GPIOB, GPIO_Pin_12);
 			break;
 		
 		default:
