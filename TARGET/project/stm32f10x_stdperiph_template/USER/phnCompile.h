@@ -18,8 +18,8 @@
 #define FIRMWARE_REVISION               1
 	 
 	 
-#define PLATFORM_MASTER 				1
-#define PLATFORM_SALVE_1 				0
+#define PLATFORM_MASTER 				0
+#define PLATFORM_SALVE_1 				1
 #define PLATFORM_SALVE_2 				0
 #define PLATFORM_SALVE_3 				0
 

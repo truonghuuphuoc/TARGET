@@ -53,6 +53,13 @@ int main(void){
 	
 	uint8_t message[256];
 	uint16_t length, index;
+	
+#if(PLATFORM_MASTER)
+	uint8_t data[] = {0x12, 0x34, 0x05, 0x67};
+	uint32_t prevTime, deltaTime;
+#else
+	uint8_t data[] = {0x21, 0x43, 0x50, 0x76};
+#endif
 
 	__disable_irq();
 
@@ -67,40 +74,78 @@ int main(void){
 
 	printf("start\r\n");
 	
-	while (1)
-	{
-		
-		
 		
 #if(PLATFORM_MASTER)
-		
-		uint8_t data[] = {0x12, 0x34, 0x05, 0x67};
-		
-		phnOsal_DelayMs(1000);
-		
-		phnMessage_GetMessageFormat(data, sizeof(data), message, &length);
-		
-		for(index = 0; index < length; index ++)
+
+
+		while (1)
 		{
-			printf("%02X ", message[index]);
-		}
-		printf("\r\n");
 		
-		phnRs485_SendMessage(message, length);
-#else
-		if(phnRs485_IsMessageReceived())
-		{
-			phnRs485_GetMessageReceived(message, &length);
+			phnOsal_DelayMs(1000);
+			
+			phnMessage_GetMessageFormat(data, sizeof(data), message, &length);
 			
 			for(index = 0; index < length; index ++)
 			{
 				printf("%02X ", message[index]);
 			}
 			printf("\r\n");
+			
+			phnRs485_SendMessage(message, length);
+			
+			prevTime = phnOsal_GetCurrentTickCount();
+			
+			while(1)
+			{
+				if(phnRs485_IsMessageReceived())
+				{
+					phnRs485_GetMessageReceived(message, &length);
+					
+					for(index = 0; index < length; index ++)
+					{
+						printf("%02X ", message[index]);
+					}
+					printf("\r\n");
+				}
+				
+				deltaTime = phnOsal_GetElapseTime(prevTime);
+				
+				if(deltaTime > 500)
+				{
+					break;
+				}
+			}
 		}
+#else
 		
+		
+		while(1)
+		{
+			
+			if(phnRs485_IsMessageReceived())
+			{
+				phnRs485_GetMessageReceived(message, &length);
+				
+				for(index = 0; index < length; index ++)
+				{
+					printf("%02X ", message[index]);
+				}
+				printf("\r\n");
+				
+				phnMessage_GetMessageFormat(data, sizeof(data), message, &length);
+				
+				for(index = 0; index < length; index ++)
+				{
+					printf("%02X ", message[index]);
+				}
+				printf("\r\n");
+				
+				phnOsal_DelayMs(5);
+				
+				phnRs485_SendMessage(message, length);
+			}
+		}
 #endif
-	}
 }
 
 
