@@ -7,61 +7,114 @@
 #if(PHN_MASTER_PLATFORM)
 phnMessageType_t gMessageControl[PHN_NB_SALVE] = 
 {
-	{	/*1*/	
+	{	/*01*/	
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*2*/
+	{	/*02*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*3*/
+	{	/*03*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*4*/
+	{	/*04*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*5*/
+	{	/*05*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*6*/
+	{	/*06*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*7*/
+	{	/*07*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*8*/
+	{	/*08*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	{	/*9*/
+	{	/*09*/
 		0x00, 
 		0x00,
 		PHN_STATUS_DONE,
 		PHN_DEV_OFFLINE,
 	},
-	
+	{	/*10*/	
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*11*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*12*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*13*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*14*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*15*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*16*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*17*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
+	{	/*18*/
+		0x00, 
+		0x00,
+		PHN_STATUS_DONE,
+		PHN_DEV_OFFLINE,
+	},
 };
 #elif(PHN_SLAVE_PLATFORM)
 phnMessageType_t gMessageControl =

@@ -11,12 +11,19 @@ void phnExInt_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	EXTI_InitTypeDef EXTI_InitStructure;
+	EXTITrigger_TypeDef extiTrigger;
 
 	/* Enable the Clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 	
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
+	
+#if(PHN_INTERUPT_MODE)
+	extiTrigger = EXTI_Trigger_Rising;
+#else
+	extiTrigger = EXTI_Trigger_Falling;
+#endif
 	
 	/**
 	 *	Pin B 3 
@@ -35,7 +42,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line3;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 
@@ -55,7 +62,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line4;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -76,7 +83,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line5;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -97,7 +104,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line6;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -119,7 +126,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line7;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -140,7 +147,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line8;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -161,7 +168,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line9;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -182,7 +189,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line13;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -203,7 +210,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line14;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 	
@@ -224,7 +231,7 @@ void phnExInt_Init(void)
 	EXTI_InitStructure.EXTI_Line = EXTI_Line15;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_Trigger = extiTrigger;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
 }

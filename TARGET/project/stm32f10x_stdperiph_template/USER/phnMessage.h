@@ -9,7 +9,7 @@
 	 
 #include "phnCompile.h"	 
 	 
-#define MESG_BUFFER_SIZE	50	 
+#define MESG_BUFFER_SIZE	80	 
 
 /*Start message*/
 #define MESG_STX			0x02

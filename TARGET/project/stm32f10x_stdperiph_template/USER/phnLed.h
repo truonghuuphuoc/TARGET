@@ -7,11 +7,6 @@
 
 
 #include <stdint.h>	 	 
-
-#define LED_DEV_MASSTER		0x00
-#define LED_DEV_SLAVE_1		0x01			 
-#define LED_DEV_SLAVE_2		0x02
-#define LED_DEV_SLAVE_3		0x03
 	 
 /**
   * @brief  

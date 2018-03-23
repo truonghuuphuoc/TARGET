@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stm32f10x.h>
+#include "phnCompile.h"
 
 
 void phnLed_Init()
@@ -60,21 +61,37 @@ void phnLed_SetDeviceLeds(uint8_t device)
 {
 	switch(device)
 	{
-		case LED_DEV_MASSTER:
+		case PHN_MASTER_DEV_ID:
+			GPIO_ResetBits(GPIOB, GPIO_Pin_11);
+			GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+			GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+			break;
+		
+		case PHN_SLAVE_01_DEV_ID:
+		case PHN_SLAVE_04_DEV_ID:
+		case PHN_SLAVE_07_DEV_ID:
+		case PHN_SLAVE_10_DEV_ID:
+		case PHN_SLAVE_13_DEV_ID:
+		case PHN_SLAVE_16_DEV_ID:
 			GPIO_SetBits(GPIOB, GPIO_Pin_11);
 			break;
 		
-		case LED_DEV_SLAVE_1:
-			GPIO_SetBits(GPIOB, GPIO_Pin_13);
-			break;
-		
-		case LED_DEV_SLAVE_2:
+		case PHN_SLAVE_02_DEV_ID:
+		case PHN_SLAVE_05_DEV_ID:
+		case PHN_SLAVE_08_DEV_ID:
+		case PHN_SLAVE_11_DEV_ID:
+		case PHN_SLAVE_14_DEV_ID:
+		case PHN_SLAVE_17_DEV_ID:
 			GPIO_SetBits(GPIOB, GPIO_Pin_12);
 			break;
 		
-		case LED_DEV_SLAVE_3:
+		case PHN_SLAVE_03_DEV_ID:
+		case PHN_SLAVE_06_DEV_ID:
+		case PHN_SLAVE_09_DEV_ID:
+		case PHN_SLAVE_12_DEV_ID:
+		case PHN_SLAVE_15_DEV_ID:
+		case PHN_SLAVE_18_DEV_ID:
 			GPIO_SetBits(GPIOB, GPIO_Pin_13);
-			GPIO_SetBits(GPIOB, GPIO_Pin_12);
 			break;
 		
 		default:

@@ -83,15 +83,24 @@ void phnMaster_Processing()
 	
 	uint8_t salveDevice[PHN_NB_SALVE] = 
 	{	
-		PHN_SLAVE_1_DEV_ID, 
-		PHN_SLAVE_2_DEV_ID, 
-		PHN_SLAVE_3_DEV_ID,
-		PHN_SLAVE_4_DEV_ID, 
-		PHN_SLAVE_5_DEV_ID, 
-		PHN_SLAVE_6_DEV_ID,
-		PHN_SLAVE_7_DEV_ID, 
-		PHN_SLAVE_8_DEV_ID,
-		PHN_SLAVE_9_DEV_ID
+		PHN_SLAVE_01_DEV_ID, 
+		PHN_SLAVE_02_DEV_ID, 
+		PHN_SLAVE_03_DEV_ID,
+		PHN_SLAVE_04_DEV_ID, 
+		PHN_SLAVE_05_DEV_ID, 
+		PHN_SLAVE_06_DEV_ID,
+		PHN_SLAVE_07_DEV_ID, 
+		PHN_SLAVE_08_DEV_ID,
+		PHN_SLAVE_09_DEV_ID,
+		PHN_SLAVE_10_DEV_ID,
+		PHN_SLAVE_11_DEV_ID,
+		PHN_SLAVE_12_DEV_ID,
+		PHN_SLAVE_13_DEV_ID,
+		PHN_SLAVE_14_DEV_ID,
+		PHN_SLAVE_15_DEV_ID,
+		PHN_SLAVE_16_DEV_ID,
+		PHN_SLAVE_17_DEV_ID,
+		PHN_SLAVE_18_DEV_ID,
 	};
 	
 	//Disalbe all interrupt
@@ -120,7 +129,7 @@ void phnMaster_Processing()
 	
 	
 	//Set Master Led
-	phnLed_SetDeviceLeds(LED_DEV_MASSTER);
+	phnLed_SetDeviceLeds(DEVICE_ID);
 	
 	//Initialze state machine
 	currState = PHN_MAST_IDLE_SLEEP;
@@ -374,13 +383,7 @@ void phnSlave_Processing()
 	__enable_irq();
 	
 	//Set Slave Led
-#if(PLATFORM_SLAVE_1)
-	phnLed_SetDeviceLeds(LED_DEV_SLAVE_1);
-#elif(PLATFORM_SLAVE_2)
-	phnLed_SetDeviceLeds(LED_DEV_SLAVE_2);
-#elif(PLATFORM_SLAVE_3)
-	phnLed_SetDeviceLeds(LED_DEV_SLAVE_3);
-#endif
+	phnLed_SetDeviceLeds(DEVICE_ID);
 	
 		
 	//Get current tick count
