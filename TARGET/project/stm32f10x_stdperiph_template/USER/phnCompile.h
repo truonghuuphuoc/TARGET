@@ -13,9 +13,9 @@
 #define STRINGIZE2(s) 					#s
 #define STRINGIZE(s) 					STRINGIZE2(s)	 
 	 
-#define	FIRMWARE_VERSION_MAJOR	        1
+#define	FIRMWARE_VERSION_MAJOR	        2
 #define FIRMWARE_VERSION_MINOR	        0
-#define FIRMWARE_REVISION               5
+#define FIRMWARE_REVISION               2
 	 
 #define PHN_NB_SALVE					18	 
 	 
@@ -28,22 +28,33 @@
 #define PHN_SLAVE_04_DEV_ID				0xA4
 #define PHN_SLAVE_05_DEV_ID				0xA5
 #define PHN_SLAVE_06_DEV_ID				0xA6
-#define PHN_SLAVE_07_DEV_ID				0xA7
-#define PHN_SLAVE_08_DEV_ID				0xA8
-#define PHN_SLAVE_09_DEV_ID				0xA9
 
-#define PHN_SLAVE_10_DEV_ID				0xB1
-#define PHN_SLAVE_11_DEV_ID				0xB2
-#define PHN_SLAVE_12_DEV_ID				0xB3
-#define PHN_SLAVE_13_DEV_ID				0xB4
-#define PHN_SLAVE_14_DEV_ID				0xB5
-#define PHN_SLAVE_15_DEV_ID				0xB6
-#define PHN_SLAVE_16_DEV_ID				0xB7
-#define PHN_SLAVE_17_DEV_ID				0xB8
-#define PHN_SLAVE_18_DEV_ID				0xB9
+#define PHN_SLAVE_07_DEV_ID				0xB1
+#define PHN_SLAVE_08_DEV_ID				0xB2
+#define PHN_SLAVE_09_DEV_ID				0xB3
+#define PHN_SLAVE_10_DEV_ID				0xB4
+#define PHN_SLAVE_11_DEV_ID				0xB5
+#define PHN_SLAVE_12_DEV_ID				0xB6
+
+#define PHN_SLAVE_13_DEV_ID				0xC1
+#define PHN_SLAVE_14_DEV_ID				0xC2
+#define PHN_SLAVE_15_DEV_ID				0xC3
+#define PHN_SLAVE_16_DEV_ID				0xC4
+#define PHN_SLAVE_17_DEV_ID				0xC5
+#define PHN_SLAVE_18_DEV_ID				0xC6
+
+
+#define PHN_INTERUPT_MODE	0
+
+#if(PHN_INTERUPT_MODE)
+#define DEVICE_MODE		" (R) "
+#else
+#define DEVICE_MODE		" (F) "
+#endif
+
 	 
 #define PLATFORM_MASTER 				0
-#define PLATFORM_SLAVE_01 				1
+#define PLATFORM_SLAVE_01 				0
 #define PLATFORM_SLAVE_02 				0
 #define PLATFORM_SLAVE_03 				0
 #define PLATFORM_SLAVE_04 				0
@@ -60,7 +71,7 @@
 #define PLATFORM_SLAVE_15 				0
 #define PLATFORM_SLAVE_16 				0
 #define PLATFORM_SLAVE_17 				0
-#define PLATFORM_SLAVE_18 				0
+#define PLATFORM_SLAVE_18 				1
 
 #if (	PLATFORM_MASTER 	+ \
 		PLATFORM_SLAVE_01 	+ \
@@ -208,15 +219,6 @@
 #if(PLATFORM_SLAVE_18)
 #define DEVICE_NAME		"Salve 18: "
 #define DEVICE_ID		PHN_SLAVE_18_DEV_ID
-#endif
-
-
-#define PHN_INTERUPT_MODE	1
-
-#if(PHN_INTERUPT_MODE)
-#define DEVICE_MODE		" (R) "
-#else
-#define DEVICE_MODE		" (F) "
 #endif
 
 #define FIRMWARE_VER	DEVICE_NAME DEVICE_MODE "("STRINGIZE(DEVICE_ID)") " STRINGIZE(FIRMWARE_VERSION_MAJOR) "." STRINGIZE(FIRMWARE_VERSION_MINOR) "." STRINGIZE(FIRMWARE_REVISION)
