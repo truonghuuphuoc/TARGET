@@ -44,6 +44,8 @@ void phnRs485_Init()
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
+	phnMessage_Init();
+	
 	phnRs485_EnableReceive();
 	
 	phnRs485_Reset();
