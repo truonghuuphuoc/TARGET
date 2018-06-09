@@ -33,11 +33,15 @@ typedef enum
 typedef struct
 {
 	uint8_t mAck;
-	uint8_t mValue;
-	uint8_t mStatus;
 #if(PHN_MASTER_PLATFORM)
+	uint8_t mValue[PHN_BUFFER_SCORE];
+	uint8_t mStatus[PHN_BUFFER_SCORE];
+	uint8_t mHead;
+	uint8_t mTail;
 	uint8_t mDeviceStatus;
 #elif(PHN_SLAVE_PLATFORM)
+	uint8_t mValue;
+	uint8_t mStatus;
 	uint32_t mTime;
 #endif
 }phnMessageType_t;
@@ -48,6 +52,13 @@ extern phnMessageType_t gMessageControl[PHN_NB_SALVE];
 #elif(PHN_SLAVE_PLATFORM)
 extern phnMessageType_t gMessageControl;
 #endif
+
+/**
+  * @brief  
+  * @param  None
+  * @retval None
+  */
+void phnMessage_Init(void);
 	 
 /**
   * @brief  

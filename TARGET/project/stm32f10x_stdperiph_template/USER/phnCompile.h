@@ -13,9 +13,9 @@
 #define STRINGIZE2(s) 					#s
 #define STRINGIZE(s) 					STRINGIZE2(s)	 
 	 
-#define	FIRMWARE_VERSION_MAJOR	        2
+#define	FIRMWARE_VERSION_MAJOR	        3
 #define FIRMWARE_VERSION_MINOR	        0
-#define FIRMWARE_REVISION               2
+#define FIRMWARE_REVISION               0
 	 
 #define PHN_NB_SALVE					18	 
 	 
@@ -44,7 +44,7 @@
 #define PHN_SLAVE_18_DEV_ID				0xC6
 
 
-#define PHN_INTERUPT_MODE	0
+#define PHN_INTERUPT_MODE	1
 
 #if(PHN_INTERUPT_MODE)
 #define DEVICE_MODE		" (R) "
@@ -53,7 +53,7 @@
 #endif
 
 	 
-#define PLATFORM_MASTER 				0
+#define PLATFORM_MASTER 				1
 #define PLATFORM_SLAVE_01 				0
 #define PLATFORM_SLAVE_02 				0
 #define PLATFORM_SLAVE_03 				0
@@ -71,7 +71,7 @@
 #define PLATFORM_SLAVE_15 				0
 #define PLATFORM_SLAVE_16 				0
 #define PLATFORM_SLAVE_17 				0
-#define PLATFORM_SLAVE_18 				1
+#define PLATFORM_SLAVE_18 				0
 
 #if (	PLATFORM_MASTER 	+ \
 		PLATFORM_SLAVE_01 	+ \
@@ -227,6 +227,9 @@
 #define PHN_SLAVE_TARGET_UPDATE		500
 
 #define PHN_MAST_REQ_TIME			50
+
+
+#define PHN_BUFFER_SCORE			7
 
 #ifdef __cplusplus
 }
