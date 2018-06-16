@@ -15,7 +15,7 @@
 	 
 #define	FIRMWARE_VERSION_MAJOR	        3
 #define FIRMWARE_VERSION_MINOR	        0
-#define FIRMWARE_REVISION               0
+#define FIRMWARE_REVISION               1
 	 
 #define PHN_NB_SALVE					18	 
 	 

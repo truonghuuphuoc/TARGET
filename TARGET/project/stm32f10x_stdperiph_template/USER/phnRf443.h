@@ -8,7 +8,7 @@
 
 #include <stdint.h>	 	 
 
-#define RS485_RECV_TIMEOUT		50	 
+#define RF443_RECV_TIMEOUT		200	 
 	 
 	 
 /**

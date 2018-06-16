@@ -100,7 +100,7 @@ void phnRf443_ReceiveHandler(uint8_t data)
 		dwTime = phnOsal_GetElapseTime(gRf433_StartTime);
 		
 		// timeout
-		if(dwTime > RS485_RECV_TIMEOUT)
+		if(dwTime > RF443_RECV_TIMEOUT)
 		{
 			phnRf443_Reset();
 			break;
@@ -122,7 +122,7 @@ void phnRf443_ReceiveHandler(uint8_t data)
 		dwTime = phnOsal_GetElapseTime(gRf433_StartTime);
 		
 		// timeout
-		if(dwTime > RS485_RECV_TIMEOUT)
+		if(dwTime > RF443_RECV_TIMEOUT)
 		{
 			phnRf443_Reset();
 			break;
